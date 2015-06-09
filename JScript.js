@@ -1,0 +1,3 @@
+function changeScreens(){
+	alert('Hiya!');
+}

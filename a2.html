@@ -7,9 +7,12 @@
  
  <body>
   <div id="startScreen"><br>
-    <p id="levelSelect">Level: </p><br>
-	<p id="startButton">Start</p><br>
-	<p id="highScore">High Score: </p>
+   <form>Level:
+    <input type="radio" id="level1" name="levels" value=0 checked="checked">1 
+    <input type="radio" id="level2" name="levels" value=1>2
+   </form><br>
+   <button type="button" id="startButton" onclick=changeScreens()>Start</button><br>
+   <p id="highScore">High Score: </p>
   </div>
  </body>
 </html>
