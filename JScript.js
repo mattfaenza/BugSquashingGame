@@ -1,19 +1,30 @@
 var seconds = 60;
-var countD = null;
-var foodBits = new Array();
-var gameStage = document.getElementById("gameScreen");
-var ctx = gameStage.getContext("2d");
+var countD;
+var foodBits = [];
+window.onload = startClick;
+var foodSpawnCount = 0;
+
+
+//called when page loads; sets up the handler
+function startClick(){
+	document.getElementById("startButton").onclick = changeScreens;
+	document.getElementById("pauseButton").onclick = pause;
+	document.getElementById("resumeButton").onclick = resume;
+}
 
 //function to change the screen from start to game screen
 function changeScreens(){
 	document.getElementById('startScreen').style.display='none';
 	document.getElementById('infoBar').style.display='block';
 	document.getElementById('gameScreen').style.display='block';
-	timerCount();
+	do{
 	spawnFood();
+	foodSpawnCount++;
+	}while(foodSpawnCount != 5)
+	timerCount();
 }
 
-//starts the timer and recursively countsdown
+//starts the timer and recursively counts down
 function timerCount(){
 	document.getElementById("countDown").innerHTML = "Time Left:" + seconds;
 	if(seconds == 0){
@@ -38,15 +49,19 @@ function resume(){
 	document.getElementById('pauseButton').style.display='block';
 	document.getElementById('resumeButton').style.display='none';
 }
-//tried making an object as food, doesnt allow the game to start when it is uncommented for some reason
 
+//spawns a single food object
 function spawnFood(){
-	var foodNode = createElement("newFood");
-	foodNode.x = Math.random() * gameStage.width;
-	foodNode.y = Math.random() * gameStage.height;
-	
+	var foodNode = document.createElement("p");
+	var gameStage = document.getElementById("gameScreen");
+	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "#FF0000";
-	ctx.fillRect(100, 100, 20, 20);
+	
+	foodNode.x = (Math.random()*(gameStage.width - 40)) + 10;
+	foodNode.y = (Math.random()*(gameStage.height - 40)) + 10;
+	ctx.beginPath();
+	ctx.arc(foodNode.x, foodNode.y, 10, 0, 2 * Math.PI);
+	ctx.fill();
 	
 	foodBits.push(foodNode);
 	gameStage.appendChild(foodNode);

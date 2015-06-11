@@ -11,18 +11,18 @@
     <input type="radio" id="level1" name="levels" value=0 checked="checked">1 
     <input type="radio" id="level2" name="levels" value=1>2
    </form><br>
-   <button type="button" id="startButton" onclick=changeScreens()>Start</button><br>
+   <button type="button" id="startButton">Start</button><br>
    <p id="highScore">High Score: </p>
   </div>
   
   <div id="infoBar">
    <p id="countDown"></p>
-   <button type="button" value="Pause" id="pauseButton" onclick=pause()>Pause</button>
-   <button type="button" value="Resume" id="resumeButton" onclick=resume()>Resume</button>
+   <button type="button" value="Pause" id="pauseButton">Pause</button>
+   <button type="button" value="Resume" id="resumeButton">Resume</button>
    <p id="Score"></p>
   </div>
   
-  <canvas id="gameScreen"></canvas>
+  <canvas id="gameScreen" width="400" height="500"></canvas>
   
  </body>
 </html>
