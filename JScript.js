@@ -6,6 +6,8 @@ window.onload = startClick;
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
+var moveEvent;
+var swarmIndex = 0;
 
 //called when page loads; sets up the handler
 function startClick(){
@@ -24,13 +26,14 @@ function changeScreens(){
 	foodSpawnCount++;
 	}while(foodSpawnCount != 5)
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
+	moveEvent = setInterval(function(){updateMovement()}, 1000);
 	timerCount();
 }
 
 //starts the timer and recursively counts down
 function timerCount(){
 	document.getElementById("countDown").innerHTML = "Time Left:" + seconds;
-	if(seconds == 0){
+	if(seconds == 0 || foodSpawnCount == 0){
 		alert("Game Over!");
 	}else{
 		seconds--;
@@ -74,7 +77,7 @@ function spawnFood(){
 
 //spawns a single bug object
 function spawnBug(){
-	var bugNode = document.createElement("bug");
+	var bugNode = document.createElement("bug"+foodSpawnCount);
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "Blue";
@@ -99,6 +102,49 @@ function spawnBug(){
 	}
 }
 
+function updateMovement(){
+	var gameStage = document.getElementById("gameScreen");
+	var ctx = gameStage.getContext("2d");
+	ctx.fillStyle = "Blue";
+	var distx;
+	var disty;
+	var shortestDistance = 0;
+	var shortestx = 0;
+	var shortesty = 0;
+	var testDistance = 0;
+	
+	ctx.clearRect(0,0,400,500);
+	ctx.fillStyle = "#FF0000";
+	do{
+		for(i = 0; i < foodSpawnCount; i++){
+			ctx.beginPath();
+			ctx.arc(foodBits[i].x, foodBits[i].y, 10, 0, 2 * Math.PI);
+			ctx.fill();
+			distx = swarm[swarmIndex].x - foodBits[i].x
+			disty = swarm[swarmIndex].y - foodBits[i].y
+			testDistance = Math.sqrt(Math.pow(distx,2) + Math.pow(disty,2));
+			if(shortestDistance > testDistance){ //pythagoreas to find shortest distance
+				shortestDistance = testDistance;
+				shortestx = distx;
+				shortesty = disty;
+			}
+		}
+		
+		if(swarm[swarmIndex].y > swarm[swarmIndex].x){
+			ctx.rotate((swarm[swarmIndex].x/shortestDistance) * Math.PI/180); 
+		}else{
+			ctx.rotate((swarm[swarmIndex].y/shortestDistance) * Math.PI/180);
+		}
+		
+		swarm[swarmIndex].x += 1.8;
+		swarm[swarmIndex].y += 1.8;
+		
+		ctx.fillRect(swarm[swarmIndex].x, swarm[swarmIndex].y, 10, 40);
+		
+		swarmIndex += 1; 
+	}while(swarmIndex != swarm.length)
+	swarmIndex = 0;
+}
 
 
 
