@@ -25,6 +25,7 @@ function changeScreens(){
 	}while(foodSpawnCount != 5)
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
 	timerCount();
+	document.getElementById('infoBar').onclick = update;
 	document.getElementById("gameScreen").onclick = attack;
 }
 
@@ -65,6 +66,7 @@ function spawnFood(){
 	
 	foodNode.x = (Math.random()*(gameStage.width - 40)) + 10;
 	foodNode.y = (Math.random()*(gameStage.height - 40)) + 10;
+	
 	foodNode.left = foodNode.x - 20 ;
 	foodNode.top = foodNode.y - 20;
 	foodNode.right = foodNode.x + 20;
@@ -84,18 +86,17 @@ function spawnBug(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "Blue";
-	
+	bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
+	bugNode.y = 0;
 	//this portion of code will take care of random spawn
 	//failed spawns are kept in count and will always spawn a bug
 	//between 1 and 3 seconds.
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
-		bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
 		ctx.fillRect(bugNode.x, 0, 10, 40);	
 		swarm.push(bugNode);
 		gameStage.appendChild(bugNode);
 		failedSpawn = 0;
 	}else if(Math.floor(Math.random()*1.9) == 1){ //randomly choose whether to spawn or not
-		bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
 		ctx.fillRect(bugNode.x, 0, 10, 40);	
 		swarm.push(bugNode);
 		gameStage.appendChild(bugNode);
@@ -120,7 +121,26 @@ function attack(event){
 	
 }
 
-
+function update(){
+	var gameStage = document.getElementById("gameScreen");
+	var ctx = gameStage.getContext("2d");
+	ctx.clearRect(0,0,400,500);
+	ctx.fillStyle = "RED";
+	
+	for(var a = 0; a < foodBits.length; a++){
+		ctx.beginPath();
+		ctx.arc(foodBits[a].x, foodBits[a].y,10,0,2*Math.PI); 
+		ctx.fill();
+	}
+	
+	for(var b = 0; b < swarm.length; b++){
+		ctx.fillStyle = "Blue";
+		swarm[b].x += 1;
+		swarm[b].y += 1;
+		ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
+	}
+	
+}
 
 
 
