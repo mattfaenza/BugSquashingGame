@@ -6,7 +6,7 @@ window.onload = startClick;
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
-
+var updater;
 //called when page loads; sets up the handler
 function startClick(){
 	document.getElementById("startButton").onclick = changeScreens;
@@ -25,7 +25,7 @@ function changeScreens(){
 	}while(foodSpawnCount != 5)
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
 	timerCount();
-	document.getElementById('infoBar').onclick = update;
+	updater = setInterval(function(){update()}, 100);
 	document.getElementById("gameScreen").onclick = attack;
 }
 
@@ -138,8 +138,7 @@ function update(){
 		swarm[b].x += 1;
 		swarm[b].y += 1;
 		ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
-	}
-	
+	}	
 }
 
 
