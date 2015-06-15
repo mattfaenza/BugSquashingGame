@@ -6,7 +6,6 @@ window.onload = startClick;
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
-var bugNum = 0;
 
 //called when page loads; sets up the handler
 function startClick(){
@@ -89,7 +88,7 @@ function Bug(xPos, yPos, bugProbability) {
 		this.type = 'black';
 		this.speed = 150;
 	}
-	else if bugProbability >= 4 && <= 6) {
+	else if (bugProbability >= 4 && bugProbability <= 6) {
 		this.type = 'red';
 		this.speed = 75;
 	}
@@ -150,7 +149,7 @@ function updateGame(){
 	//begin an update for each bug (and food bit if needed)
 	for (var i = 0; i < swarm.length; i++) {
 		var currentBug = swawm[i];
-		if (currentBug.xPos = currentBug.target.xPos && currentBug.yPos = 	currentBug.target.yPos) {
+		if (currentBug.xPos == currentBug.target.xPos && currentBug.yPos == currentBug.target.yPos) {
 			//remove bug and food from respective arrays
 			swarm = swarm.splice(i,1);
 			foodBits = foodBits.splice(currentBug.target.index, 1);
