@@ -112,7 +112,7 @@ function spawnBug(){
 	//between 1 and 3 seconds.
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
 		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
-		bugProbabilitiy = Math.floor((Math.random()* 10 + 1))
+		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
 		//ctx.fillRect(bugNode.xPos, 0, 10, 40);	
