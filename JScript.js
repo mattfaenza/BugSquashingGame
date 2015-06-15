@@ -58,18 +58,18 @@ function resume(){
 
 //spawns a single food object
 function spawnFood(){
-	var foodNode = document.createElement("food");
+	//var foodNode = document.createElement("food");
 	xRandom = (Math.random()*(gameStage.width - 40)) + 10;
 	yRandom = (Math.random()*(gameStage.height - 40)) + 10;
-	//var foodNode(xRandom, yRandom);
+	var foodBit = foodNode(xRandom, yRandom);
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "#FF0000";
 	ctx.beginPath();
-	ctx.arc(foodNode.x, foodNode.y, 10, 0, 2 * Math.PI);
+	ctx.arc(foodBit.x, foodBit.y, 10, 0, 2 * Math.PI);
 	ctx.fill();
 	
-	foodBits.push(foodNode);
+	foodBits.push(foodBit);
 	gameStage.appendChild(foodNode);
 }
 
