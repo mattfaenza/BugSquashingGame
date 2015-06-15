@@ -25,7 +25,7 @@ function changeScreens(){
 	}while(foodSpawnCount != 5)
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
 	timerCount();
-	updater = setInterval(function(){update()}, 100);
+	update();
 	document.getElementById("gameScreen").onclick = attack;
 }
 
@@ -139,6 +139,7 @@ function update(){
 		swarm[b].y += 1;
 		ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
 	}	
+	requestAnimationFrame(update);
 }
 
 
