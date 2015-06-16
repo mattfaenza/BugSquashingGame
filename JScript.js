@@ -91,18 +91,14 @@ function spawnFood(){
 	var xRandom = (Math.random()*(gameStage.width - 40)) + 10;
 	var yRandom = (Math.random()*(gameStage.height - 40)) + 10;
 	var foodBit = new foodNode(xRandom, yRandom);
-	//var foodNode = document.createElement("food");
 	
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "#FF0000";
 	
-	//foodNode.x = xRandom;
-	//foodNode.y = yRandom;
-	
-	foodNode.left = foodNode.x - 20 ;
-	foodNode.top = foodNode.y - 20;
-	foodNode.right = foodNode.x + 20;
-	foodNode.bottom = foodNode.y + 20;
+	foodNode.left = foodNode.xPos - 20 ;
+	foodNode.top = foodNode.yPos - 20;
+	foodNode.right = foodNode.xPos + 20;
+	foodNode.bottom = foodNode.yPos + 20;
     	
 	ctx.beginPath();
 	ctx.arc(foodBit.xPos, foodBit.yPos, 10, 0, 2 * Math.PI);
@@ -114,12 +110,11 @@ function spawnFood(){
 
 //spawns a single bug object
 function spawnBug(){
-	var bugNode = document.createElement("bug");
+
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "Blue";
-	//bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
-	//bugNode.y = 0;
+	
 	//this portion of code will take care of random spawn
 	//failed spawns are kept in count and will always spawn a bug
 	//between 1 and 3 seconds.
@@ -128,39 +123,39 @@ function spawnBug(){
 		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
-		ctx.fillRect(bugNode.x, 0, 10, 40);	
+		ctx.fillRect(bugNode.xPos, 0, 10, 40);	
 		swarm.push(bugNode);
-		//gameStage.appendChild(bugNode);
+
 		failedSpawn = 0;
 		//updateBug call?
 	}else if(Math.floor(Math.random()*1.9) == 1){ //randomly choose whether to spawn or not
 		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
-		bugProbabilitiy = Math.floor((Math.random()* 10 + 1))
+		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
 		ctx.fillRect(bugNode.xPos, 0, 10, 40);	
 		swarm.push(bugNode);
-		//gameStage.appendChild(bugNode);
+
 		failedSpawn = 0;
 	}else{ //failed spawn, increase the count by 1
 		failedSpawn += 1; 
 	}
 }
 
-//function attack(event){
-//	var gameStage = document.getElementById("gameScreen");
-//	var rect = gameStage.getBoundingClientRect();
-//	var clickx = event.clientX - rect.left;
-//   var clicky = event.clientY - rect.top;
+function attack(event){
+	var gameStage = document.getElementById("gameScreen");
+	var rect = gameStage.getBoundingClientRect();
+	var clickx = event.clientX - rect.left;
+   var clicky = event.clientY - rect.top;
 		
-//	for(i = 0; i < foodBits.length; i++){
-//		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
-//			alert("clicked" + (i+1));
-//		}
-		
-//	}
+	for(i = 0; i < foodBits.length; i++){
+		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
+			alert("clicked" + (i+1));
+		}
+
+	}
 	
-//}
+}
 
 function update(){
 	var gameStage = document.getElementById("gameScreen");
