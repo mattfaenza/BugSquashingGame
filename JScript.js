@@ -59,11 +59,12 @@ function resume(){
 
 //spawns a single food object
 function spawnFood(){
-	var foodNode = document.createElement("food");
+	var foodNode = document.createElement("canvas");
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "#FF0000";
 	
+	foodNode.id = "food"+foodBits.length;
 	foodNode.x = (Math.random()*(gameStage.width - 40)) + 10;
 	foodNode.y = (Math.random()*(gameStage.height - 40)) + 10;
 	
@@ -82,15 +83,15 @@ function spawnFood(){
 
 //spawns a single bug object
 function spawnBug(){
-	var bugNode = document.createElement("bug");
+	var bugNode = document.createElement("canvas");
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "Blue";
+	bugNode.id = "bug"+swarm.length;
 	bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
 	bugNode.y = 0;
-	//this portion of code will take care of random spawn
-	//failed spawns are kept in count and will always spawn a bug
-	//between 1 and 3 seconds.
+	bugNode.angle = 0;
+	bugNode.target = shortestDistance(bugNode.x, bugNode.y);
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
 		ctx.fillRect(bugNode.x, 0, 10, 40);	
 		swarm.push(bugNode);
@@ -106,6 +107,22 @@ function spawnBug(){
 	}
 }
 
+function shortestDistance(xPos, yPos){
+	var targ = 0;
+	var findShort = 0;
+	var hypo = 0;
+	var bugx = xPos;
+	var bugy = yPos;
+	for(i = 0; i < foodBits.length; i++){
+		hypo = Math.sqrt(Math.pow(bugx - foodBits[i].x,2) + Math.pow(bugy - foodBits[i].y,2));
+		if(findShort == 0 || findShort > hypo){
+			findShort = hypo;
+			targ = foodBits[i];
+		}
+	}
+	return targ;
+}
+
 function attack(event){
 	var gameStage = document.getElementById("gameScreen");
 	var rect = gameStage.getBoundingClientRect();
@@ -114,16 +131,15 @@ function attack(event){
 		
 	for(i = 0; i < foodBits.length; i++){
 		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
-			alert("clicked" + (i+1));
+			alert("clicked" + (i));
 		}
-		
 	}
-	
 }
 
 function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
+	var angle = 0;
 	ctx.clearRect(0,0,400,500);
 	ctx.fillStyle = "RED";
 	
@@ -132,13 +148,27 @@ function update(){
 		ctx.arc(foodBits[a].x, foodBits[a].y,10,0,2*Math.PI); 
 		ctx.fill();
 	}
-	
-	for(var b = 0; b < swarm.length; b++){
+
+	/*setTimeout(function() {
+        requestAnimationFrame(update);
+        for(var b = 0; b < swarm.length; b++){
+			ctx.fillStyle = "Blue";
+			swarm[b].x += 1;
+			swarm[b].y += 1;
+			ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
+		}
+    }, 1000 / 60);*/
+
+	for(var b = 0; b < swarm.length; b++){	
+		//var bugCanvas = document.getElementById("bug"+b);
+		//var bctx = bugContext.getContext("2d");
+		swarm[b].angle = Math.atan2(swarm[b].target.y, swarm[b].target.x);	
+		//bctx.rotate(swarm[b].angle + (Math.PI/2));
 		ctx.fillStyle = "Blue";
 		swarm[b].x += 1;
 		swarm[b].y += 1;
 		ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
-	}	
+	}
 	requestAnimationFrame(update);
 }
 
