@@ -118,8 +118,8 @@ function spawnBug(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "Blue";
-	bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
-	bugNode.y = 0;
+	//bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
+	//bugNode.y = 0;
 	//this portion of code will take care of random spawn
 	//failed spawns are kept in count and will always spawn a bug
 	//between 1 and 3 seconds.
@@ -138,7 +138,7 @@ function spawnBug(){
 		bugProbabilitiy = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
-		ctx.fillRect(bugNode.x, 0, 10, 40);	
+		ctx.fillRect(bugNode.xPos, 0, 10, 40);	
 		swarm.push(bugNode);
 		//gameStage.appendChild(bugNode);
 		failedSpawn = 0;
@@ -183,9 +183,9 @@ function update(){
 			//foodBits = foodBits.splice(currentBug.target.index, 1);
 			//} else { 
 				ctx.fillStyle = "Blue";
-				swarm[b].x += 1;
-				swarm[b].y += 1;
-				ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
+				swarm[b].xPos += 1;
+				swarm[b].yPos += 1;
+				ctx.fillRect(swarm[b].xPos, swarm[b].yPos, 10, 40);
 			//}
 	}	
 	
