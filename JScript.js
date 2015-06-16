@@ -87,7 +87,7 @@ function Bug(xPos, yPos, bugProbability) {
 		this.img = blackBug.src;
 		this.speed = 60;
 	}
-	this.target = getClosestFood(xPos, yPos);
+	this.target = shortestDistance(this.xPos, this.yPos);
 }
 
 
@@ -130,9 +130,10 @@ function spawnBug(){
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
 		ctx.save();
-		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos) * Math.PI/180);
+		ctx.translate(bugNode.xPos, bugNode.yPos);
+		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos));
 		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
-		ctx.fillRect(bugNode.xPos, 0, 10, 40);
+		ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 
@@ -144,15 +145,17 @@ function spawnBug(){
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
 		ctx.save();
-		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos) * Math.PI/180);
+		ctx.translate(bugNode.xPos, bugNode.yPos);
+		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos));
 		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos, 239, 239);
-		ctx.fillRect(bugNode.xPos, 0, 10, 40);
+		ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();	
 		swarm.push(bugNode);
 
 		failedSpawn = 0;
 	}else{ //failed spawn, increase the count by 1
 		failedSpawn += 1; 
+	}
 	}
 }
 
@@ -193,11 +196,12 @@ function update(){
 			//} else { 
 				ctx.fillStyle = "Blue";
 				ctx.save();
-				ctx.rotate(Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos) * Math.PI/180);
 				swarm[b].xPos += 1;
 				swarm[b].yPos += 1;
+				ctx.translate(swarm[b].xPos, swarm[b].yPos);
+				ctx.rotate(Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos));
 				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
-				ctx.fillRect(swarm[b].xPos, swarm[b].yPos, 10, 40);
+				ctx.fillRect(0, 0, 10, 40);
 				ctx.restore();
 			//}
 	}	
@@ -206,22 +210,40 @@ function update(){
 }
 
 //This function will get the nearest food node to the bug
+/*
 function getClosestFood(xBugPos, yBugPos) {
-	var currentClosest = foodBits[0];
+	var currentClosest;
 	var newDistance = 0;
 	//calculate first disance using distance forumla
-	currentDistance = Math.sqrt(Math.pow(currentClosest.xPos - xBugPos) + Math.pow(currentClosest.yPos - yBugPos));
+	var currentDistance = 0;
+	currentDistance = Math.sqrt(Math.pow((foodBits[0].xPos - xBugPos),2) + Math.pow((foodBits[0].yPos - yBugPos),2));
 	for (var i = 1; i < foodBits.length; i++) {
 		//calculate next disance using distance forumla
-		newDistance = Math.sqrt(Math.pow(currentClosest.xPos - xBugPos) + Math.pow(currentClosest.yPos - yBugPos));
-		if (newDistance < currentClosest.distance) {
+		newDistance = Math.sqrt(Math.pow((currentClosest.xPos - xBugPos),2) + Math.pow((currentClosest.yPos - yBugPos),2));
+		if (newDistance < currentDistance) {
 			currentClosest = foodBits[i];
 			currentDistance = newDistance;
 		}
 	}
 	return currentClosest;
-	
 }
+*/
+function shortestDistance(xPos, yPos){
+	var targ = 0;
+	var findShort = 0;
+	var hypo = 0;
+	var bugx = xPos;
+	var bugy = yPos;
+	for(i = 0; i < foodBits.length; i++){
+		hypo = Math.sqrt(Math.pow(bugx - foodBits[i].xPos,2) + Math.pow(bugy - foodBits[i].yPos,2));
+		if(findShort == 0 || findShort > hypo){
+			findShort = hypo;
+			targ = foodBits[i];
+		}
+	}
+	return targ;
+}
+
 
 
 
