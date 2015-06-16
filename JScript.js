@@ -1,12 +1,12 @@
 var seconds = 60;
 var countD;
-var foodBits = [];
-var swarm = [];
+var foodBits = new Array();
+var swarm = new Array();
 window.onload = startClick;
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
-
+var updater;
 //called when page loads; sets up the handler
 function startClick(){
 	document.getElementById("startButton").onclick = changeScreens;
@@ -25,6 +25,8 @@ function changeScreens(){
 	}while(foodSpawnCount != 5)
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
 	timerCount();
+	update();
+	document.getElementById("gameScreen").onclick = attack;
 }
 
 //starts the timer and recursively counts down
@@ -55,23 +57,6 @@ function resume(){
 	document.getElementById('resumeButton').style.display='none';
 }
 
-//spawns a single food object
-function spawnFood(){
-	//var foodNode = document.createElement("food");
-	xRandom = (Math.random()*(gameStage.width - 40)) + 10;
-	yRandom = (Math.random()*(gameStage.height - 40)) + 10;
-	var foodBit = foodNode(xRandom, yRandom);
-	var gameStage = document.getElementById("gameScreen");
-	var ctx = gameStage.getContext("2d");
-	ctx.fillStyle = "#FF0000";
-	ctx.beginPath();
-	ctx.arc(foodBit.x, foodBit.y, 10, 0, 2 * Math.PI);
-	ctx.fill();
-	
-	foodBits.push(foodBit);
-	gameStage.appendChild(foodNode);
-}
-
 //a food node
 function foodNode(xPos, yPos) {
 	//food node is pushed after creation, giving it the tail index
@@ -99,68 +84,102 @@ function Bug(xPos, yPos, bugProbability) {
 	this.target = getClosestFood(xPos, yPos);
 }
 
+
+//spawns a single food object
+function spawnFood(){
+	xRandom = (Math.random()*(gameStage.width - 40)) + 10;
+	yRandom = (Math.random()*(gameStage.height - 40)) + 10;
+	var foodBit = new foodNode(xRandom, yRandom);
+	//var foodNode = document.createElement("food");
+	var gameStage = document.getElementById("gameScreen");
+	var ctx = gameStage.getContext("2d");
+	ctx.fillStyle = "#FF0000";
+	
+	//foodNode.x = (Math.random()*(gameStage.width - 40)) + 10;
+	//foodNode.y = (Math.random()*(gameStage.height - 40)) + 10;
+	
+	//foodNode.left = foodNode.x - 20 ;
+	//foodNode.top = foodNode.y - 20;
+	//foodNode.right = foodNode.x + 20;
+	//foodNode.bottom = foodNode.y + 20;
+    	
+	ctx.beginPath();
+	ctx.arc(foodBit.xPos, foodBit.yPos, 10, 0, 2 * Math.PI);
+	//ctx.closePath();
+	ctx.fill();
+	
+	foodBits.push(foodBit);
+	gameStage.appendChild(foodBit);
+}
+
 //spawns a single bug object
 function spawnBug(){
-	//var bugNode = document.createElement("bug" + bugNum);
+	var bugNode = document.createElement("bug");
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "Blue";
-	
+	bugNode.x = (Math.random()*(gameStage.width - 40)) + 15;
+	bugNode.y = 0;
 	//this portion of code will take care of random spawn
 	//failed spawns are kept in count and will always spawn a bug
 	//between 1 and 3 seconds.
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
-		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
-		bugProbability = Math.floor((Math.random()* 10 + 1))
-		var bugNode = new Bug(xRandom, 0, bugProbability)
-		//stand in for bug graphic
-		//ctx.fillRect(bugNode.xPos, 0, 10, 40);	
-		swarm.push(bugNode);
-		//gameStage.appendChild(bugNode);
-		failedSpawn = 0;
-		updateGame();
-		//window.requestAnimationFrame(update_bug(aBug));
-	}else if(Math.floor(Math.random()*1.9) == 1){ //randomly choose whether to spawn or not
-		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
-		bugProbabilitiy = Math.floor((Math.random()* 10 + 1))
-		var bugNode = new Bug(xRandom, 0, bugProbability)
-		//stand in for bug graphic
-		//ctx.fillRect(bugNode.xPos, 0, 10, 40);
+		ctx.fillRect(bugNode.x, 0, 10, 40);	
 		swarm.push(bugNode);
 		gameStage.appendChild(bugNode);
 		failedSpawn = 0;
-		updateGame();
+	}else if(Math.floor(Math.random()*1.9) == 1){ //randomly choose whether to spawn or not
+		ctx.fillRect(bugNode.x, 0, 10, 40);	
+		swarm.push(bugNode);
+		gameStage.appendChild(bugNode);
+		failedSpawn = 0;
 	}else{ //failed spawn, increase the count by 1
-		failedSpawn += 1;
-		updateGame();
+		failedSpawn += 1; 
 	}
 }
 
-Bug.prototype.update = function () {
-//this function needs to redraw the bug at its new location each frame
-	ctx.fillRect(bugNode.xPos, 0, 10, 40);
+function attack(event){
+	var gameStage = document.getElementById("gameScreen");
+	var rect = gameStage.getBoundingClientRect();
+	var clickx = event.clientX - rect.left;
+    var clicky = event.clientY - rect.top;
+		
+	for(i = 0; i < foodBits.length; i++){
+		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
+			alert("clicked" + (i+1));
+		}
+		
+	}
+	
 }
 
-//This function will animate the bug after it spawns
-//It assumes bugs are objects with a target attribute
-function updateGame(){
-	//clear the previous canvas for a new frame drawing
-	ctx.clearRect(0, 0, 400, 500);
-	//begin an update for each bug (and food bit if needed)
-	for (var i = 0; i < swarm.length; i++) {
-		var currentBug = swawm[i];
-		if (currentBug.xPos == currentBug.target.xPos && currentBug.yPos == currentBug.target.yPos) {
-			//remove bug and food from respective arrays
-			swarm = swarm.splice(i,1);
-			foodBits = foodBits.splice(currentBug.target.index, 1);
-			//need to remove from the screen
-			}
-		else {
-			currentBug.update();
-			}
-		}
-	window.requestAnimationFrame(updateGame);
+function update(){
+	var gameStage = document.getElementById("gameScreen");
+	var ctx = gameStage.getContext("2d");
+	ctx.clearRect(0,0,400,500);
+	ctx.fillStyle = "Blue";
 	
+	for(var b = 0; b < swarm.length; b++){
+		//if (currentBug.xPos == currentBug.target.xPos && currentBug.yPos == currentBug.target.yPos) {
+			//remove bug and food from respective arrays
+			//swarm = swarm.splice(b,1);
+			//foodBits = foodBits.splice(currentBug.target.index, 1);
+			//} else { 
+				swarm[b].x += 1;
+				swarm[b].y += 1;
+				ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
+			//}
+	}	
+	
+	for(var a = 0; a < foodBits.length; a++){
+		ctx.fillStyle = "RED";
+		ctx.beginPath();
+		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
+		//ctx.closePath();
+		ctx.fill();
+	}
+	
+	requestAnimationFrame(update);
 }
 
 //This function will get the nearest food node to the bug
@@ -180,7 +199,6 @@ function getClosestFood(xBugPos, yBugPos) {
 	return currentClosest;
 	
 }
-
 
 
 
