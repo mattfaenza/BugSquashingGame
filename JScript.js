@@ -26,7 +26,7 @@ function changeScreens(){
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
 	timerCount();
 	update();
-	document.getElementById("gameScreen").onclick = attack;
+	//document.getElementById("gameScreen").onclick = attack;
 }
 
 //starts the timer and recursively counts down
@@ -87,21 +87,22 @@ function Bug(xPos, yPos, bugProbability) {
 
 //spawns a single food object
 function spawnFood(){
-	xRandom = (Math.random()*(gameStage.width - 40)) + 10;
-	yRandom = (Math.random()*(gameStage.height - 40)) + 10;
+	var gameStage = document.getElementById("gameScreen");
+	var xRandom = (Math.random()*(gameStage.width - 40)) + 10;
+	var yRandom = (Math.random()*(gameStage.height - 40)) + 10;
 	var foodBit = new foodNode(xRandom, yRandom);
 	//var foodNode = document.createElement("food");
-	var gameStage = document.getElementById("gameScreen");
+	
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "#FF0000";
 	
-	//foodNode.x = (Math.random()*(gameStage.width - 40)) + 10;
-	//foodNode.y = (Math.random()*(gameStage.height - 40)) + 10;
+	//foodNode.x = xRandom;
+	//foodNode.y = yRandom;
 	
-	//foodNode.left = foodNode.x - 20 ;
-	//foodNode.top = foodNode.y - 20;
-	//foodNode.right = foodNode.x + 20;
-	//foodNode.bottom = foodNode.y + 20;
+	foodNode.left = foodNode.x - 20 ;
+	foodNode.top = foodNode.y - 20;
+	foodNode.right = foodNode.x + 20;
+	foodNode.bottom = foodNode.y + 20;
     	
 	ctx.beginPath();
 	ctx.arc(foodBit.xPos, foodBit.yPos, 10, 0, 2 * Math.PI);
@@ -138,26 +139,34 @@ function spawnBug(){
 	}
 }
 
-function attack(event){
-	var gameStage = document.getElementById("gameScreen");
-	var rect = gameStage.getBoundingClientRect();
-	var clickx = event.clientX - rect.left;
-    var clicky = event.clientY - rect.top;
+//function attack(event){
+//	var gameStage = document.getElementById("gameScreen");
+//	var rect = gameStage.getBoundingClientRect();
+//	var clickx = event.clientX - rect.left;
+//   var clicky = event.clientY - rect.top;
 		
-	for(i = 0; i < foodBits.length; i++){
-		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
-			alert("clicked" + (i+1));
-		}
+//	for(i = 0; i < foodBits.length; i++){
+//		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
+//			alert("clicked" + (i+1));
+//		}
 		
-	}
+//	}
 	
-}
+//}
 
 function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
-	ctx.fillStyle = "Blue";
+	ctx.fillStyle = "RED";
+	
+	for(var a = 0; a < foodBits.length; a++){
+
+		ctx.beginPath();
+		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
+		//ctx.closePath();
+		ctx.fill();
+	}
 	
 	for(var b = 0; b < swarm.length; b++){
 		//if (currentBug.xPos == currentBug.target.xPos && currentBug.yPos == currentBug.target.yPos) {
@@ -165,19 +174,12 @@ function update(){
 			//swarm = swarm.splice(b,1);
 			//foodBits = foodBits.splice(currentBug.target.index, 1);
 			//} else { 
+				ctx.fillStyle = "Blue";
 				swarm[b].x += 1;
 				swarm[b].y += 1;
 				ctx.fillRect(swarm[b].x, swarm[b].y, 10, 40);
 			//}
 	}	
-	
-	for(var a = 0; a < foodBits.length; a++){
-		ctx.fillStyle = "RED";
-		ctx.beginPath();
-		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
-		//ctx.closePath();
-		ctx.fill();
-	}
 	
 	requestAnimationFrame(update);
 }
