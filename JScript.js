@@ -26,7 +26,7 @@ function changeScreens(){
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
 	timerCount();
 	update();
-	//document.getElementById("gameScreen").onclick = attack;
+	document.getElementById("gameScreen").onclick = attack;
 }
 
 //starts the timer and recursively counts down
@@ -123,7 +123,10 @@ function spawnBug(){
 		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
-		ctx.fillRect(bugNode.xPos, 0, 10, 40);	
+		ctx.save();
+		ctx.rotate(30 * Math.PI/180);
+		ctx.fillRect(bugNode.xPos, 0, 10, 40);
+		ctx.restore();
 		swarm.push(bugNode);
 
 		failedSpawn = 0;
@@ -133,7 +136,10 @@ function spawnBug(){
 		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
-		ctx.fillRect(bugNode.xPos, 0, 10, 40);	
+		ctx.save();
+		ctx.rotate(30 * Math.PI/180);
+		ctx.fillRect(bugNode.xPos, 0, 10, 40);
+		ctx.restore();	
 		swarm.push(bugNode);
 
 		failedSpawn = 0;
@@ -146,7 +152,7 @@ function attack(event){
 	var gameStage = document.getElementById("gameScreen");
 	var rect = gameStage.getBoundingClientRect();
 	var clickx = event.clientX - rect.left;
-   var clicky = event.clientY - rect.top;
+    var clicky = event.clientY - rect.top;
 		
 	for(i = 0; i < foodBits.length; i++){
 		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
