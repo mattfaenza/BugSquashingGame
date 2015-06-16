@@ -106,11 +106,10 @@ function spawnFood(){
     	
 	ctx.beginPath();
 	ctx.arc(foodBit.xPos, foodBit.yPos, 10, 0, 2 * Math.PI);
-	//ctx.closePath();
+	ctx.closePath();
 	ctx.fill();
 	
 	foodBits.push(foodBit);
-	gameStage.appendChild(foodBit);
 }
 
 //spawns a single bug object
@@ -125,14 +124,23 @@ function spawnBug(){
 	//failed spawns are kept in count and will always spawn a bug
 	//between 1 and 3 seconds.
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
+		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
+		bugProbability = Math.floor((Math.random()* 10 + 1))
+		var bugNode = new Bug(xRandom, 0, bugProbability)
+		//stand in for bug graphic
 		ctx.fillRect(bugNode.x, 0, 10, 40);	
 		swarm.push(bugNode);
-		gameStage.appendChild(bugNode);
+		//gameStage.appendChild(bugNode);
 		failedSpawn = 0;
+		//updateBug call?
 	}else if(Math.floor(Math.random()*1.9) == 1){ //randomly choose whether to spawn or not
+		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
+		bugProbabilitiy = Math.floor((Math.random()* 10 + 1))
+		var bugNode = new Bug(xRandom, 0, bugProbability)
+		//stand in for bug graphic
 		ctx.fillRect(bugNode.x, 0, 10, 40);	
 		swarm.push(bugNode);
-		gameStage.appendChild(bugNode);
+		//gameStage.appendChild(bugNode);
 		failedSpawn = 0;
 	}else{ //failed spawn, increase the count by 1
 		failedSpawn += 1; 
@@ -164,7 +172,7 @@ function update(){
 
 		ctx.beginPath();
 		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
-		//ctx.closePath();
+		ctx.closePath();
 		ctx.fill();
 	}
 	
