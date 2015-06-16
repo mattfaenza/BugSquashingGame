@@ -193,7 +193,7 @@ function update(){
 			//} else { 
 				ctx.fillStyle = "Blue";
 				ctx.save();
-				ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos) * Math.PI/180);
+				ctx.rotate(Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos) * Math.PI/180);
 				swarm[b].xPos += 1;
 				swarm[b].yPos += 1;
 				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
