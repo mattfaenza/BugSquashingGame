@@ -7,6 +7,9 @@ var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
 var updater;
+var blackBug = new Image();
+blackBug.src = 'images/black.png';
+
 //called when page loads; sets up the handler
 function startClick(){
 	document.getElementById("startButton").onclick = changeScreens;
@@ -71,14 +74,17 @@ function Bug(xPos, yPos, bugProbability) {
 	this.yPos = yPos;
 	if (bugProbability < 4) {
 		this.type = 'black';
+		this.img = blackBug.src;
 		this.speed = 150;
 	}
 	else if (bugProbability >= 4 && bugProbability <= 6) {
 		this.type = 'red';
+		this.img = blackBug.src;
 		this.speed = 75;
 	}
 	else {
 		this.type = 'orange';
+		this.img = blackBug.src;
 		this.speed = 60;
 	}
 	this.target = getClosestFood(xPos, yPos);
@@ -124,7 +130,8 @@ function spawnBug(){
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
 		ctx.save();
-		ctx.rotate(30 * Math.PI/180);
+		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos) * Math.PI/180);
+		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
 		ctx.fillRect(bugNode.xPos, 0, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
@@ -137,7 +144,8 @@ function spawnBug(){
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
 		ctx.save();
-		ctx.rotate(30 * Math.PI/180);
+		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos) * Math.PI/180);
+		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos, 239, 239);
 		ctx.fillRect(bugNode.xPos, 0, 10, 40);
 		ctx.restore();	
 		swarm.push(bugNode);
@@ -184,9 +192,13 @@ function update(){
 			//foodBits = foodBits.splice(currentBug.target.index, 1);
 			//} else { 
 				ctx.fillStyle = "Blue";
+				ctx.save();
+				ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos) * Math.PI/180);
 				swarm[b].xPos += 1;
 				swarm[b].yPos += 1;
+				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
 				ctx.fillRect(swarm[b].xPos, swarm[b].yPos, 10, 40);
+				ctx.restore();
 			//}
 	}	
 	
