@@ -187,7 +187,12 @@ function update(){
 	for(var b = 0; b < swarm.length; b++){
 		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos){
 			//foodBits.splice(swarm[b].target.index, 1);
-			foodBits.splice(swarm[b].target.index, 1);
+			var i = swarm[b].target.index;
+			foodBits.splice(i, 1);
+			for(i; i < foodBits.length; i++) {
+				foodBits[i].index = i;
+			}
+			
 			}
 				ctx.save();
 				//swarm[b].yPos += 1;
