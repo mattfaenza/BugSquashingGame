@@ -195,12 +195,12 @@ function update(){
 			//} else { 
 				ctx.fillStyle = "Blue";
 				ctx.save();
-				
+				swarm[b].yPos += 1;
 				ctx.translate(swarm[b].xPos, swarm[b].yPos);
 				if(swarm[b].xPos > swarm[b].target.xPos){
-					ctx.rotate(Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos));
+					ctx.rotate(Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos));
 				}else{
-					ctx.rotate(-Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos));
+					ctx.rotate(-Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos));
 				}
 				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
 				ctx.fillRect(0, 0, 10, 40);
