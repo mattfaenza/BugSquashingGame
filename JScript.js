@@ -186,9 +186,8 @@ function update(){
 	ctx.fillStyle = "Blue";
 	for(var b = 0; b < swarm.length; b++){
 		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos){
-			//food from respective arrays
-			//foodBits.splice(swarm[b].target.index, 1);
-			foodBits = foodBits.splice(swarm[b].target.index, 1);
+			
+			foodBits.splice(swarm[b].target.index, 1);
 			}else{ 
 				ctx.save();
 				//swarm[b].yPos += 1;
