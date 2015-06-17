@@ -186,9 +186,9 @@ function update(){
 	ctx.fillStyle = "Blue";
 	for(var b = 0; b < swarm.length; b++){
 		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos){
-			
+			//foodBits.splice(swarm[b].target.index, 1);
 			foodBits.splice(swarm[b].target.index, 1);
-			}else{ 
+			}
 				ctx.save();
 				//swarm[b].yPos += 1;
 				swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
@@ -214,7 +214,7 @@ function update(){
 				}*/
 				ctx.fillRect(0, 0, 10, 40);
 				ctx.restore();
-			}
+			
 	}
 	ctx.fillStyle = "RED";
 	for(var a = 0; a < foodBits.length; a++){
@@ -260,11 +260,3 @@ function shortestDistance(xPos, yPos){
 	}
 	return targ;
 }
-
-
-
-
-
-
-
-
