@@ -66,14 +66,18 @@ function resume(){
 function foodNode(xPos, yPos) {
 	//food node is pushed after creation, giving it the tail index
 	this.index = foodBits.length;
-	this.xPos = xPos;
-	this.yPos = yPos;
+	this.xPos = Math.floor(xPos);
+	this.yPos = Math.floor(yPos);
+	this.left = this.xPos - 20 ;
+	this.top = this.yPos - 20;
+	this.right = this.xPos + 20;
+	this.bottom = this.yPos + 20;
 }
 
 //a bug node - needs a check for level 1 or 2, level 1 for now
 function Bug(xPos, yPos, bugProbability) {
-	this.xPos = xPos;
-	this.yPos = yPos;
+	this.xPos = Math.floor(xPos);
+	this.yPos = Math.floor(yPos);
 	if (bugProbability < 4) {
 		this.type = 'black';
 		this.img = blackBug.src;
@@ -90,6 +94,7 @@ function Bug(xPos, yPos, bugProbability) {
 		this.speed = 60;
 	}
 	this.target = shortestDistance(this.xPos, this.yPos);
+	this.angle = Math.atan2(this.target.yPos - this.yPos, this.target.xPos - this.xPos) + (Math.PI / 2);
 }
 
 
@@ -103,11 +108,6 @@ function spawnFood(){
 	var ctx = gameStage.getContext("2d");
 	ctx.fillStyle = "#FF0000";
 	
-	foodNode.left = foodNode.xPos - 20 ;
-	foodNode.top = foodNode.yPos - 20;
-	foodNode.right = foodNode.xPos + 20;
-	foodNode.bottom = foodNode.yPos + 20;
-    	
 	ctx.beginPath();
 	ctx.arc(foodBit.xPos, foodBit.yPos, 10, 0, 2 * Math.PI);
 	ctx.closePath();
@@ -133,11 +133,11 @@ function spawnBug(){
 		//stand in for bug graphic
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
-		ctx.rotate(Math.atan2(bugNode.target.yPos - bugNode.yPos, bugNode.target.xPos - bugNode.xPos) + (Math.PI / 2));
-		blackBug.onload = function () {
+		ctx.rotate(bugNode.angle);
+		/*blackBug.onload = function () {
 			ctx.drawImage(bugNode.img, 0,0,60,60);
-		}
-		//ctx.fillRect(0, 0, 10, 40);
+		}*/
+		ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 
@@ -150,11 +150,11 @@ function spawnBug(){
 		//stand in for bug graphic
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
-		ctx.rotate(Math.atan2(bugNode.target.yPos - bugNode.yPos, bugNode.target.xPos - bugNode.xPos) + (Math.PI / 2));
-		blackBug.onload = function () {
-			ctx.drawImage(bugNode.img,0,0,60,60);
-		}
-		//ctx.fillRect(0, 0, 10, 40);
+		ctx.rotate(bugNode.angle);
+		/*blackBug.onload = function () {
+			ctx.drawImage(bugNode.img, 0,0,60,60);
+		}*/
+		ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();	
 		swarm.push(bugNode);
 
@@ -176,9 +176,7 @@ function attack(event){
 			//remove from swarm array
 			//swarm.splice(b,1);
 		}
-
 	}
-	
 }
 
 function update(){
@@ -186,33 +184,46 @@ function update(){
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
 	ctx.fillStyle = "Blue";
-	
 	for(var b = 0; b < swarm.length; b++){
-		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos) {
-			//remove food from array
-			foodBits.splice(swarm[b].target.index, 1);
-			} 
-				//ctx.fillStyle = "Blue";
+		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos){
+			//food from respective arrays
+			//foodBits.splice(swarm[b].target.index, 1);
+			foodBits = foodBits.splice(swarm[b].target.index, 1);
+			}else{ 
 				ctx.save();
-				swarm[b].yPos += 1;
+				//swarm[b].yPos += 1;
 				swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
+				swarm[b].angle = Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) + (Math.PI / 2);
 				ctx.translate(swarm[b].xPos, swarm[b].yPos);
-				ctx.rotate(Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) + (Math.PI / 2));
-				blackBug.onload = function () {
-					ctx.drawImage(swarm[b].img, 0,0,60,60);
+				ctx.rotate(swarm[b].angle);
+				var newX; 
+				var newY;
+				if(swarm[b].xPos < swarm[b].target.xPos){
+					newX = 1;
+				}else{
+					newX = -1;
 				}
-				//ctx.fillRect(0, 0, 10, 40);
+				if(swarm[b].yPos < swarm[b].target.yPos){
+					newY = 1;
+				}else{
+					newY = -1;
+				}
+				swarm[b].xPos += newX;
+				swarm[b].yPos += newY;
+				/*blackBug.onload = function () {
+					ctx.drawImage(swarm[b].img, 0,0,60,60);
+				}*/
+				ctx.fillRect(0, 0, 10, 40);
 				ctx.restore();
-			
-	}	
+			}
+	}
+	ctx.fillStyle = "RED";
 	for(var a = 0; a < foodBits.length; a++){
-		ctx.fillStyle = "RED";
 		ctx.beginPath();
 		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
 		ctx.closePath();
 		ctx.fill();
-	}
-	
+	}		
 	requestAnimationFrame(update);
 }
 
