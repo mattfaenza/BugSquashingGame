@@ -167,6 +167,8 @@ function attack(event){
 	for(i = 0; i < foodBits.length; i++){
 		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
 			alert("clicked" + (i+1));
+			//remove from swarm array
+			//swarm = swarm.splice(b,1);
 		}
 
 	}
@@ -177,23 +179,14 @@ function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
-	ctx.fillStyle = "RED";
-	
-	for(var a = 0; a < foodBits.length; a++){
-
-		ctx.beginPath();
-		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
-		ctx.closePath();
-		ctx.fill();
-	}
+	ctx.fillStyle = "Blue";
 	
 	for(var b = 0; b < swarm.length; b++){
-		//if (currentBug.xPos == currentBug.target.xPos && currentBug.yPos == currentBug.target.yPos) {
-			//remove bug and food from respective arrays
-			//swarm = swarm.splice(b,1);
-			//foodBits = foodBits.splice(currentBug.target.index, 1);
-			//} else { 
-				ctx.fillStyle = "Blue";
+		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos) {
+			//remove food from array
+			foodBits = foodBits.splice(swarm[b].target.index, 1);
+			} 
+				//ctx.fillStyle = "Blue";
 				ctx.save();
 				swarm[b].yPos += 1;
 				swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
@@ -202,8 +195,15 @@ function update(){
 				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
 				ctx.fillRect(0, 0, 10, 40);
 				ctx.restore();
-			//}
+			
 	}	
+	for(var a = 0; a < foodBits.length; a++){
+		ctx.fillStyle = "RED";
+		ctx.beginPath();
+		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
+		ctx.closePath();
+		ctx.fill();
+	}
 	
 	requestAnimationFrame(update);
 }
