@@ -22,6 +22,8 @@ function changeScreens(){
 	document.getElementById('startScreen').style.display='none';
 	document.getElementById('infoBar').style.display='block';
 	document.getElementById('gameScreen').style.display='block';
+	var blackBug = new Image();
+	blackBug.src = 'images/black.png';
 	do{
 	spawnFood();
 	foodSpawnCount++;
@@ -132,8 +134,10 @@ function spawnBug(){
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(Math.atan2(bugNode.target.yPos - bugNode.yPos, bugNode.target.xPos - bugNode.xPos) + (Math.PI / 2));
-		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
-		ctx.fillRect(0, 0, 10, 40);
+		blackBug.onload = function () {
+			ctx.drawImage(bugNode.img, 0,0,60,60);
+		}
+		//ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 
@@ -147,8 +151,10 @@ function spawnBug(){
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(Math.atan2(bugNode.target.yPos - bugNode.yPos, bugNode.target.xPos - bugNode.xPos) + (Math.PI / 2));
-		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos, 239, 239);
-		ctx.fillRect(0, 0, 10, 40);
+		blackBug.onload = function () {
+			ctx.drawImage(bugNode.img,0,0,60,60);
+		}
+		//ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();	
 		swarm.push(bugNode);
 
@@ -168,7 +174,7 @@ function attack(event){
 		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
 			alert("clicked" + (i+1));
 			//remove from swarm array
-			//swarm = swarm.splice(b,1);
+			//swarm.splice(b,1);
 		}
 
 	}
@@ -184,7 +190,7 @@ function update(){
 	for(var b = 0; b < swarm.length; b++){
 		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos) {
 			//remove food from array
-			foodBits = foodBits.splice(swarm[b].target.index, 1);
+			foodBits.splice(swarm[b].target.index, 1);
 			} 
 				//ctx.fillStyle = "Blue";
 				ctx.save();
@@ -192,8 +198,10 @@ function update(){
 				swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
 				ctx.translate(swarm[b].xPos, swarm[b].yPos);
 				ctx.rotate(Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) + (Math.PI / 2));
-				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
-				ctx.fillRect(0, 0, 10, 40);
+				blackBug.onload = function () {
+					ctx.drawImage(swarm[b].img, 0,0,60,60);
+				}
+				//ctx.fillRect(0, 0, 10, 40);
 				ctx.restore();
 			
 	}	
