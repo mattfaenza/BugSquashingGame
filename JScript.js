@@ -68,10 +68,10 @@ function foodNode(xPos, yPos) {
 	this.index = foodBits.length;
 	this.xPos = Math.floor(xPos);
 	this.yPos = Math.floor(yPos);
-	this.left = this.xPos - 20 ;
-	this.top = this.yPos - 20;
-	this.right = this.xPos + 20;
-	this.bottom = this.yPos + 20;
+	this.left = this.xPos - 10 ;
+	this.top = this.yPos - 10;
+	this.right = this.xPos + 10;
+	this.bottom = this.yPos + 10;
 }
 
 //a bug node - needs a check for level 1 or 2, level 1 for now
@@ -185,15 +185,17 @@ function update(){
 	ctx.clearRect(0,0,400,500);
 	ctx.fillStyle = "Blue";
 	for(var b = 0; b < swarm.length; b++){
-		if (swarm[b].xPos == swarm[b].target.xPos && swarm[b].yPos == swarm[b].target.yPos){
+		if (swarm[b].xPos < swarm[b].target.right 
+			&& swarm[b].xPos > swarm[b].target.left
+			&& swarm[b].yPos < swarm[b].target.bottom
+			&& swarm[b].yPos > swarm[b].target.top){
 			//foodBits.splice(swarm[b].target.index, 1);
 			var i = swarm[b].target.index;
 			foodBits.splice(i, 1);
-			for(i; i < foodBits.length; i++) {
-				foodBits[i].index = i;
-			}
-			
-			}
+			for(var a = 0; a < foodBits.length; a++) {
+				foodBits[a].index = a;
+			}	
+		}
 				ctx.save();
 				//swarm[b].yPos += 1;
 				swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
