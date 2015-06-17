@@ -131,7 +131,7 @@ function spawnBug(){
 		//stand in for bug graphic
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
-		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos));
+		ctx.rotate(Math.atan2(bugNode.target.yPos - bugNode.yPos, bugNode.target.xPos - bugNode.xPos) + (Math.PI / 2));
 		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
 		ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();
@@ -146,7 +146,7 @@ function spawnBug(){
 		//stand in for bug graphic
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
-		ctx.rotate(Math.atan2(bugNode.target.yPos, bugNode.target.xPos));
+		ctx.rotate(Math.atan2(bugNode.target.yPos - bugNode.yPos, bugNode.target.xPos - bugNode.xPos) + (Math.PI / 2));
 		//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos, 239, 239);
 		ctx.fillRect(0, 0, 10, 40);
 		ctx.restore();	
@@ -196,12 +196,9 @@ function update(){
 				ctx.fillStyle = "Blue";
 				ctx.save();
 				swarm[b].yPos += 1;
+				swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
 				ctx.translate(swarm[b].xPos, swarm[b].yPos);
-				if(swarm[b].xPos > swarm[b].target.xPos){
-					ctx.rotate(Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos));
-				}else{
-					ctx.rotate(-Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos));
-				}
+				ctx.rotate(Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) + (Math.PI / 2));
 				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
 				ctx.fillRect(0, 0, 10, 40);
 				ctx.restore();
