@@ -156,7 +156,6 @@ function spawnBug(){
 	}else{ //failed spawn, increase the count by 1
 		failedSpawn += 1; 
 	}
-	}
 }
 
 function attack(event){
@@ -196,10 +195,13 @@ function update(){
 			//} else { 
 				ctx.fillStyle = "Blue";
 				ctx.save();
-				swarm[b].xPos += 1;
-				swarm[b].yPos += 1;
+				
 				ctx.translate(swarm[b].xPos, swarm[b].yPos);
-				ctx.rotate(Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos));
+				if(swarm[b].xPos > swarm[b].target.xPos){
+					ctx.rotate(Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos));
+				}else{
+					ctx.rotate(-Math.atan2(swarm[b].target.yPos, swarm[b].target.xPos));
+				}
 				//ctx.drawImage(bugNode.img, bugNode.xPos, bugNode.yPos);
 				ctx.fillRect(0, 0, 10, 40);
 				ctx.restore();
