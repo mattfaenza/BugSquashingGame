@@ -5,12 +5,12 @@ var swarm = new Array();
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
-var updater;
-var blackBug = new Image();
+var blackBug = new Image(10,40);
 blackBug.src = 'images/black.png';
 var MyReq;
 var score = 0;
 var hscore = localStorage.hscore;
+var level = 0;
 window.onload = startClick;
 
 
@@ -30,6 +30,13 @@ function changeScreens(){
 	
 	if(hscore == null){
 		localStorage.hscore = score;
+	}
+	
+	var radios = document.getElementsByName('levels');
+	if (radios[0].checked) {
+		level = radios[0].value + 1;
+	}else{
+		level = radios[1].value + 1;
 	}
 	
 	do{
@@ -91,10 +98,10 @@ function foodNode(xPos, yPos) {
 	this.index = foodBits.length;
 	this.xPos = Math.floor(xPos);
 	this.yPos = Math.floor(yPos);
-	this.left = this.xPos - 10 ;
-	this.top = this.yPos - 10;
-	this.right = this.xPos + 10;
-	this.bottom = this.yPos + 10;
+	this.left = this.xPos - 25 ;
+	this.top = this.yPos - 25;
+	this.right = this.xPos + 25;
+	this.bottom = this.yPos + 25;
 }
 
 //a bug node - needs a check for level 1 or 2, level 1 for now
@@ -104,17 +111,32 @@ function Bug(xPos, yPos, bugProbability) {
 	if (bugProbability < 4) {
 		this.type = 'black';
 		this.img = blackBug.src;
-		this.speed = 1.5;
+		if(level == 1){
+			this.speed = 1.5;
+		}else{
+			this.speed = 2.0;
+		}
+		this.score = 5;
 	}
 	else if (bugProbability >= 4 && bugProbability <= 6) {
 		this.type = 'red';
 		this.img = blackBug.src;
-		this.speed = 0.75;
+		if(level == 1){
+			this.speed = 0.75;
+		}else{
+			this.speed = 1.0;
+		}
+		this.score = 3;
 	}
 	else {
 		this.type = 'orange';
 		this.img = blackBug.src;
-		this.speed = 0.6;
+		if(level == 1){
+			this.speed = 0.6;
+		}else{
+			this.speed = 0.8;
+		}
+		this.score = 1;
 	}
 	this.target = shortestDistance(this.xPos, this.yPos);
 	this.angle = Math.atan2(this.target.yPos - this.yPos, this.target.xPos - this.xPos) + (Math.PI / 2);
@@ -147,15 +169,9 @@ function spawnBug(){
 	//between 1 and 3 seconds.
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
 		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
-		bugProbability = Math.floor((Math.random()* 10 + 1))
+		bugProbability = Math.floor((Math.random()* 10 + 1));
 		var bugNode = new Bug(xRandom, 0, bugProbability)
-		if(bugNode.type == 'black'){
-			ctx.fillStyle = "Black";
-		}else if(bugNode.type == 'red'){
-			ctx.fillStyle = "Red";
-		}else{
-			ctx.fillStyle = "Orange";
-		}
+		ctx.fillStyle = bugNode.type;
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
@@ -173,13 +189,7 @@ function spawnBug(){
 		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
-		if(bugNode.type == 'black'){
-			ctx.fillStyle = "Black";
-		}else if(bugNode.type == 'red'){
-			ctx.fillStyle = "Red";
-		}else{
-			ctx.fillStyle = "Orange";
-		}
+		ctx.fillStyle = bugNode.type;
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
@@ -213,13 +223,7 @@ function attack(event){
 			&& ctop < swarm[i].yPos 
 			&& cbottom > swarm[i].yPos){
 			//will later increase score depending on the bug;
-			if(swarm[i].type == 'black'){
-				score += 3;
-			}else if(swarm[i].type == 'red'){
-				score += 2;
-			}else{
-				score += 1;
-			}
+			score += swarm[i].score;
 			document.getElementById("Score").innerHTML = "Score: " + score;
 			//remove from swarm array
 			swarm.splice(i,1);
@@ -233,13 +237,7 @@ function update(){
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
 	for(var b = 0; b < swarm.length; b++){
-		if(swarm[b].type == 'black'){
-			ctx.fillStyle = "Black";
-		}else if(swarm[b].type == 'red'){
-			ctx.fillStyle = "Red";
-		}else{
-			ctx.fillStyle = "Orange";
-		}
+		ctx.fillStyle = swarm[b].type;
 		if (swarm[b].xPos < swarm[b].target.right 
 			&& swarm[b].xPos > swarm[b].target.left
 			&& swarm[b].yPos < swarm[b].target.bottom
