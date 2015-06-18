@@ -132,9 +132,9 @@ function spawnBug(){
 		bugNode.type = 'black';
 		bugNode.img = img;
 		if(level == 1){
-			bugNode.speed = 1.5;
+			bugNode.speed = 2.5;
 		}else{
-			bugNode.speed = 2.0;
+			bugNode.speed = 3.333;
 		}
 		bugNode.score = 5;
 	}
@@ -144,9 +144,9 @@ function spawnBug(){
 		bugNode.type = 'red';
 		bugNode.img = img;
 		if(level == 1){
-			bugNode.speed = 0.75;
+			bugNode.speed = 1.25;
 		}else{
-			bugNode.speed = 1.0;
+			bugNode.speed = 1.667;
 		}
 		bugNode.score = 3;
 	}
@@ -156,16 +156,14 @@ function spawnBug(){
 		bugNode.type = 'orange';
 		bugNode.img = img;
 		if(level == 1){
-			bugNode.speed = 0.6;
+			bugNode.speed = 1;
 		}else{
-			bugNode.speed = 0.8;
+			bugNode.speed = 1.333;
 		}
 		bugNode.score = 1;
 	}
 	bugNode.target = shortestDistance(bugNode.x, bugNode.y);
 	bugNode.angle = Math.atan2(bugNode.target.y - bugNode.y, bugNode.target.x - bugNode.x) + (Math.PI / 2);	
-	
-	ctx.fillStyle = bugNode.type;
 	
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
 		ctx.save();
@@ -269,7 +267,6 @@ function update(){
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
 	for(var b = 0; b < swarm.length; b++){
-		ctx.fillStyle = swarm[b].type;
 		if (swarm[b].x < swarm[b].target.right 
 			&& swarm[b].x > swarm[b].target.left
 			&& swarm[b].y < swarm[b].target.bottom
@@ -316,7 +313,9 @@ function update(){
 		ctx.closePath();
 		ctx.fill();
 	}		
-	MyReq = requestAnimationFrame(update);
+	setTimeout(function(){
+		MyReq = requestAnimationFrame(update);
+	},1000/60);
 }
 
 function checkRestart() {
