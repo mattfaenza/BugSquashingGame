@@ -6,8 +6,6 @@ var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
 var MyReq;
-var blackBug = new Image(10,40);
-blackBug.src = 'images/black.png';
 var score = 0;
 var hscore = localStorage.hscore;
 var restart = sessionStorage.restart;
@@ -129,8 +127,10 @@ function spawnBug(){
 	bugNode.x = Math.floor((Math.random()*(gameStage.width - 40)) + 15);
 	bugNode.y = 0;
 	if (bugProbability < 4) {
+		var img = document.createElement('img');
+		img.src = 'images/black.png';
 		bugNode.type = 'black';
-		bugNode.img = blackBug.src;
+		bugNode.img = img;
 		if(level == 1){
 			bugNode.speed = 1.5;
 		}else{
@@ -139,8 +139,10 @@ function spawnBug(){
 		bugNode.score = 5;
 	}
 	else if (bugProbability >= 4 && bugProbability <= 6) {
+		var img = document.createElement('img');
+		img.src = 'images/red.png';
 		bugNode.type = 'red';
-		bugNode.img = blackBug.src;
+		bugNode.img = img;
 		if(level == 1){
 			bugNode.speed = 0.75;
 		}else{
@@ -149,8 +151,10 @@ function spawnBug(){
 		bugNode.score = 3;
 	}
 	else {
+		var img = document.createElement('img');
+		img.src = 'images/orange.png';
 		bugNode.type = 'orange';
-		bugNode.img = blackBug.src;
+		bugNode.img = img;
 		if(level == 1){
 			bugNode.speed = 0.6;
 		}else{
@@ -167,10 +171,8 @@ function spawnBug(){
 		ctx.save();
 		ctx.translate(bugNode.x, bugNode.y);
 		ctx.rotate(bugNode.angle);
-		/*blackBug.onload = function () {
-			ctx.drawImage(bugNode.img, 0,0,60,60);
-		}*/
-		ctx.fillRect(-5, -20, 10, 40);
+		ctx.drawImage(img,-5,-20,10,40);
+		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 		gameStage.appendChild(bugNode);
@@ -179,10 +181,8 @@ function spawnBug(){
 		ctx.save();
 		ctx.translate(bugNode.x, bugNode.y);
 		ctx.rotate(bugNode.angle);
-		/*blackBug.onload = function () {
-			ctx.drawImage(bugNode.img, 0,0,60,60);
-		}*/
-		ctx.fillRect(-5, -20, 10, 40);
+		ctx.drawImage(img,-5,-20,10,40);
+		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 		gameStage.appendChild(bugNode);
@@ -304,10 +304,8 @@ function update(){
 		}
 		swarm[b].x += newX;
 		swarm[b].y += newY;
-		/*blackBug.onload = function () {
-			ctx.drawImage(swarm[b].img, 0,0,60,60);
-		}*/
-		ctx.fillRect(-5, -20, 10, 40);
+		ctx.drawImage(swarm[b].img,-5,-20,10,40);
+		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 			
 	}
