@@ -2,20 +2,24 @@ var seconds = 60;
 var countD;
 var foodBits = new Array();
 var swarm = new Array();
-window.onload = startClick;
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
 var updater;
 var blackBug = new Image();
-var MyReq;
 blackBug.src = 'images/black.png';
+var MyReq;
+var score = 0;
+var hscore = localStorage.hscore;
+window.onload = startClick;
+
 
 //called when page loads; sets up the handler
 function startClick(){
 	document.getElementById("startButton").onclick = changeScreens;
 	document.getElementById("pauseButton").onclick = pause;
 	document.getElementById("resumeButton").onclick = resume;
+	document.getElementById("highScore").innerHTML ="Highscore: " + localStorage.hscore;
 }
 
 //function to change the screen from start to game screen
@@ -23,8 +27,11 @@ function changeScreens(){
 	document.getElementById('startScreen').style.display='none';
 	document.getElementById('infoBar').style.display='block';
 	document.getElementById('gameScreen').style.display='block';
-	var blackBug = new Image();
-	blackBug.src = 'images/black.png';
+	
+	if(hscore == null){
+		localStorage.hscore = score;
+	}
+	
 	do{
 	spawnFood();
 	foodSpawnCount++;
@@ -39,7 +46,20 @@ function changeScreens(){
 function timerCount(){
 	document.getElementById("countDown").innerHTML = "Time Left:" + seconds;
 	if(seconds == 0 || foodBits.length == 0){
-		alert("Game Over!");
+		clearTimeout(countD);
+		clearTimeout(bugSpawner);
+		cancelAnimationFrame(MyReq);
+		if (score > localStorage.hscore) {
+                localStorage.hscore = score;
+				document.getElementById("highScore").innerHTML ="Highscore:" + localStorage.hscore;
+		}
+		if(confirm("\t\tGame Over! \n OK = Restart, Cancel = Quit") == true){
+			location.reload();
+			
+		}else{
+			location.reload();
+		}
+
 	}else{
 		seconds--;
 		countD = setTimeout("timerCount()", 1000);
@@ -172,20 +192,23 @@ function attack(event){
 	var rect = gameStage.getBoundingClientRect();
 	var clickx = Math.floor(event.clientX - rect.left);
     var clicky = Math.floor(event.clientY - rect.top);
-	var cleft = clickx - 15;
-	var ctop = clicky - 15;
-	var cright = clickx + 15;
-	var cbottom = clicky + 15;
+	var cleft = clickx - 30;
+	var ctop = clicky - 30;
+	var cright = clickx + 30;
+	var cbottom = clicky + 30;
 	
 	for(i = 0; i < swarm.length; i++){
-		document.getElementById("Score").innerHTML = cleft + " " + cright + " " + ctop+ " " + cbottom;
+		//document.getElementById("Score").innerHTML = cleft + " " + cright + " " + ctop+ " " + cbottom;
 		if(cleft < swarm[i].xPos
 			&& cright > swarm[i].xPos 
 			&& ctop < swarm[i].yPos 
 			&& cbottom > swarm[i].yPos){
-			alert("clicked at: " + swarm[i].xPos + ", " + swarm[i].yPos);
+			//will later increase score depending on the bug;
+			score += 1;
+			document.getElementById("Score").innerHTML = "Score: " + score;
 			//remove from swarm array
 			swarm.splice(i,1);
+			
 		}
 	}
 }
