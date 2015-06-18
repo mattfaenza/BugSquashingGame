@@ -280,24 +280,15 @@ function update(){
 		ctx.save();
 		//swarm[b].y += 1;
 		swarm[b].target = shortestDistance(swarm[b].x, swarm[b].y);
-		swarm[b].angle = Math.atan2(swarm[b].target.y - swarm[b].y, swarm[b].target.x - swarm[b].x) + (Math.PI / 2);
+		swarm[b].angle = Math.atan2(swarm[b].target.y - swarm[b].y, swarm[b].target.x - swarm[b].x) *180/Math.PI;
 		ctx.translate(swarm[b].x, swarm[b].y);
-		ctx.rotate(swarm[b].angle);
-		var newX; 
+		ctx.rotate((swarm[b].angle * Math.PI/180) + (Math.PI/2));
+		var newX = swarm[b].speed * (90 - Math.abs(swarm[b].angle)) / 90; 
 		var newY;
-		if(swarm[b].x < swarm[b].target.x){
-			newX = swarm[b].speed;
-		}else if(swarm[b].x == swarm[b].target.x){
-			newX = 0;
+		if (swarm[b].angle < 0){
+            newY = -swarm[b].speed + Math.abs(newX);
 		}else{
-			newX = -swarm[b].speed;
-		}
-		if(swarm[b].y < swarm[b].target.y){
-			newY = swarm[b].speed;
-		}else if(swarm[b].y == swarm[b].target.y){
-			newY = 0;
-		}else{
-			newY = -swarm[b].speed;
+            newY = swarm[b].speed - Math.abs(newX);
 		}
 		swarm[b].x += newX;
 		swarm[b].y += newY;
