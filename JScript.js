@@ -2,7 +2,6 @@ var seconds = 60;
 var countD;
 var foodBits = new Array();
 var swarm = new Array();
-window.onload = startClick;
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
@@ -11,6 +10,7 @@ var blackBug = new Image(10,40);
 blackBug.src = 'images/black.png';
 var score = 0;
 var hscore = localStorage.hscore;
+var restart = sessionStorage.restart;
 var level = 0;
 window.onload = startClick;
 
@@ -21,6 +21,7 @@ function startClick(){
 	document.getElementById("pauseButton").onclick = pause;
 	document.getElementById("resumeButton").onclick = resume;
 	document.getElementById("highScore").innerHTML ="Highscore: " + localStorage.hscore;
+	checkRestart();
 }
 
 //function to change the screen from start to game screen
@@ -62,9 +63,11 @@ function timerCount(){
                 localStorage.hscore = score;
 				document.getElementById("highScore").innerHTML ="Highscore:" + localStorage.hscore;
 		}
-		if(confirm("\t\tGame Over! \n OK = Restart, Cancel = Quit") == true){
-			location.reload();	
+		if(confirm("\t\tGame Over! \n \t Your Score was: "+score+"\nOK = Restart, Cancel = Quit") == true){
+			sessionStorage.restart = 1;
+			location.reload();		
 		}else{
+			sessionStorage.restart = 0;
 			location.reload();
 		}
 	}else{
@@ -158,13 +161,7 @@ function spawnBug(){
 	bugNode.target = shortestDistance(bugNode.x, bugNode.y);
 	bugNode.angle = Math.atan2(bugNode.target.y - bugNode.y, bugNode.target.x - bugNode.x) + (Math.PI / 2);	
 	
-	if(bugNode.type == 'black'){
-		ctx.fillStyle = "Black";
-	}else if(bugNode.type == 'red'){
-		ctx.fillStyle = "Red";
-	}else{
-		ctx.fillStyle = "Orange";
-	}
+	ctx.fillStyle = bugNode.type;
 	
 	if(failedSpawn == 2){ //3 seconds have passed without spawn so force a spawn.
 		ctx.save();
@@ -266,9 +263,6 @@ function fade(x,y,angle, color, op) {
     var timer = setInterval(function () {fade(x,y,angle,color,op)}, 2000);
 }
 */
-function fadingProcess(){
-
-}
 
 function update(){
 	var gameStage = document.getElementById("gameScreen");
@@ -327,9 +321,8 @@ function update(){
 	MyReq = requestAnimationFrame(update);
 }
 
-
-
-
-
-
-
+function checkRestart() {
+  if(sessionStorage.restart == 1){
+	document.getElementById("startButton").click();
+  }
+}
