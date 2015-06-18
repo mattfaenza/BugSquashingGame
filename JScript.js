@@ -104,22 +104,21 @@ function Bug(xPos, yPos, bugProbability) {
 	if (bugProbability < 4) {
 		this.type = 'black';
 		this.img = blackBug.src;
-		this.speed = 150;
+		this.speed = 1.5;
 	}
 	else if (bugProbability >= 4 && bugProbability <= 6) {
 		this.type = 'red';
 		this.img = blackBug.src;
-		this.speed = 75;
+		this.speed = 0.75;
 	}
 	else {
 		this.type = 'orange';
 		this.img = blackBug.src;
-		this.speed = 60;
+		this.speed = 0.6;
 	}
 	this.target = shortestDistance(this.xPos, this.yPos);
 	this.angle = Math.atan2(this.target.yPos - this.yPos, this.target.xPos - this.xPos) + (Math.PI / 2);
 }
-
 
 //spawns a single food object
 function spawnFood(){
@@ -141,11 +140,8 @@ function spawnFood(){
 
 //spawns a single bug object
 function spawnBug(){
-
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
-	ctx.fillStyle = "Blue";
-	
 	//this portion of code will take care of random spawn
 	//failed spawns are kept in count and will always spawn a bug
 	//between 1 and 3 seconds.
@@ -153,7 +149,13 @@ function spawnBug(){
 		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
 		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
-		//stand in for bug graphic
+		if(bugNode.type == 'black'){
+			ctx.fillStyle = "Black";
+		}else if(bugNode.type == 'red'){
+			ctx.fillStyle = "Red";
+		}else{
+			ctx.fillStyle = "Orange";
+		}
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
@@ -171,6 +173,13 @@ function spawnBug(){
 		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
+		if(bugNode.type == 'black'){
+			ctx.fillStyle = "Black";
+		}else if(bugNode.type == 'red'){
+			ctx.fillStyle = "Red";
+		}else{
+			ctx.fillStyle = "Orange";
+		}
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
@@ -204,7 +213,13 @@ function attack(event){
 			&& ctop < swarm[i].yPos 
 			&& cbottom > swarm[i].yPos){
 			//will later increase score depending on the bug;
-			score += 1;
+			if(swarm[i].type == 'black'){
+				score += 3;
+			}else if(swarm[i].type == 'red'){
+				score += 2;
+			}else{
+				score += 1;
+			}
 			document.getElementById("Score").innerHTML = "Score: " + score;
 			//remove from swarm array
 			swarm.splice(i,1);
@@ -217,8 +232,14 @@ function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
-	ctx.fillStyle = "Blue";
 	for(var b = 0; b < swarm.length; b++){
+		if(swarm[b].type == 'black'){
+			ctx.fillStyle = "Black";
+		}else if(swarm[b].type == 'red'){
+			ctx.fillStyle = "Red";
+		}else{
+			ctx.fillStyle = "Orange";
+		}
 		if (swarm[b].xPos < swarm[b].target.right 
 			&& swarm[b].xPos > swarm[b].target.left
 			&& swarm[b].yPos < swarm[b].target.bottom
@@ -229,35 +250,35 @@ function update(){
 				foodBits[a].index = a;
 			}	
 		}
-				ctx.save();
-				//swarm[b].yPos += 1;
-				swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
-				swarm[b].angle = Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) + (Math.PI / 2);
-				ctx.translate(swarm[b].xPos, swarm[b].yPos);
-				ctx.rotate(swarm[b].angle);
-				var newX; 
-				var newY;
-				if(swarm[b].xPos < swarm[b].target.xPos){
-					newX = 1;
-				}else if(swarm[b].xPos == swarm[b].target.xPos){
-					newX = 0;
-				}else{
-					newX = -1;
-				}
-				if(swarm[b].yPos < swarm[b].target.yPos){
-					newY = 1;
-				}else if(swarm[b].yPos == swarm[b].target.yPos){
-					newY = 0;
-				}else{
-					newY = -1;
-				}
-				swarm[b].xPos += newX;
-				swarm[b].yPos += newY;
-				/*blackBug.onload = function () {
-					ctx.drawImage(swarm[b].img, 0,0,60,60);
-				}*/
-				ctx.fillRect(-5, -20, 10, 40);
-				ctx.restore();
+		ctx.save();
+		//swarm[b].yPos += 1;
+		swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
+		swarm[b].angle = Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) + (Math.PI / 2);
+		ctx.translate(swarm[b].xPos, swarm[b].yPos);
+		ctx.rotate(swarm[b].angle);
+		var newX; 
+		var newY;
+		if(swarm[b].xPos < swarm[b].target.xPos){
+			newX = swarm[b].speed;
+		}else if(swarm[b].xPos == swarm[b].target.xPos){
+			newX = 0;
+		}else{
+			newX = -swarm[b].speed;
+		}
+		if(swarm[b].yPos < swarm[b].target.yPos){
+			newY = swarm[b].speed;
+		}else if(swarm[b].yPos == swarm[b].target.yPos){
+			newY = 0;
+		}else{
+			newY = -swarm[b].speed;
+		}
+		swarm[b].xPos += newX;
+		swarm[b].yPos += newY;
+		/*blackBug.onload = function () {
+			ctx.drawImage(swarm[b].img, 0,0,60,60);
+		}*/
+		ctx.fillRect(-5, -20, 10, 40);
+		ctx.restore();
 			
 	}
 	ctx.fillStyle = "RED";
@@ -271,24 +292,6 @@ function update(){
 }
 
 //This function will get the nearest food node to the bug
-/*
-function getClosestFood(xBugPos, yBugPos) {
-	var currentClosest;
-	var newDistance = 0;
-	//calculate first disance using distance forumla
-	var currentDistance = 0;
-	currentDistance = Math.sqrt(Math.pow((foodBits[0].xPos - xBugPos),2) + Math.pow((foodBits[0].yPos - yBugPos),2));
-	for (var i = 1; i < foodBits.length; i++) {
-		//calculate next disance using distance forumla
-		newDistance = Math.sqrt(Math.pow((currentClosest.xPos - xBugPos),2) + Math.pow((currentClosest.yPos - yBugPos),2));
-		if (newDistance < currentDistance) {
-			currentClosest = foodBits[i];
-			currentDistance = newDistance;
-		}
-	}
-	return currentClosest;
-}
-*/
 function shortestDistance(xPos, yPos){
 	var targ = 0;
 	var findShort = 0;
