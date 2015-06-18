@@ -5,8 +5,6 @@ var swarm = new Array();
 var foodSpawnCount = 0;
 var failedSpawn = 0;
 var bugSpawner;
-var blackBug = new Image(10,40);
-blackBug.src = 'images/black.png';
 var MyReq;
 var score = 0;
 var hscore = localStorage.hscore;
@@ -112,8 +110,10 @@ function Bug(xPos, yPos, bugProbability) {
 	this.xPos = Math.floor(xPos);
 	this.yPos = Math.floor(yPos);
 	if (bugProbability < 4) {
+		var img = document.createElement('img');
+		img.src = 'images/black.png';
 		this.type = 'black';
-		this.img = blackBug.src;
+		this.img = img;
 		if(level == 1){
 			this.speed = 1.5;
 		}else{
@@ -122,8 +122,10 @@ function Bug(xPos, yPos, bugProbability) {
 		this.score = 5;
 	}
 	else if (bugProbability >= 4 && bugProbability <= 6) {
+		var img = document.createElement('img');
+		img.src = 'images/red.png';
 		this.type = 'red';
-		this.img = blackBug.src;
+		this.img = img;
 		if(level == 1){
 			this.speed = 0.75;
 		}else{
@@ -132,8 +134,10 @@ function Bug(xPos, yPos, bugProbability) {
 		this.score = 3;
 	}
 	else {
+		var img = document.createElement('img');
+		img.src = 'images/orange.png';
 		this.type = 'orange';
-		this.img = blackBug.src;
+		this.img = img;
 		if(level == 1){
 			this.speed = 0.6;
 		}else{
@@ -178,10 +182,8 @@ function spawnBug(){
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
-		/*blackBug.onload = function () {
-			ctx.drawImage(bugNode.img, 0,0,60,60);
-		}*/
-		ctx.fillRect(-5, -20, 10, 40);
+		ctx.drawImage(bugNode.img,-5,-20,10,40);
+		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 
@@ -196,10 +198,8 @@ function spawnBug(){
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
-		/*blackBug.onload = function () {
-			ctx.drawImage(bugNode.img, 0,0,60,60);
-		}*/
-		ctx.fillRect(-5, -20, 10, 40);
+		ctx.drawImage(bugNode.img,-5,-20,10,40);
+		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();	
 		swarm.push(bugNode);
 
@@ -275,10 +275,8 @@ function update(){
 		}
 		swarm[b].xPos += newX;
 		swarm[b].yPos += newY;
-		/*blackBug.onload = function () {
-			ctx.drawImage(swarm[b].img, 0,0,60,60);
-		}*/
-		ctx.fillRect(-5, -20, 10, 40);
+		ctx.drawImage(swarm[b].img,-5,-20,10,40);
+		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 			
 	}
