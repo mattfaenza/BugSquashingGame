@@ -11,7 +11,9 @@ var blackBug = new Image(10,40);
 blackBug.src = 'images/black.png';
 var score = 0;
 var hscore = localStorage.hscore;
+var level = 0;
 window.onload = startClick;
+
 
 //called when page loads; sets up the handler
 function startClick(){
@@ -29,6 +31,14 @@ function changeScreens(){
 	
 	if(hscore == null){
 		localStorage.hscore = score;
+	}
+	
+	//used to get the value of the radio buttons
+	var radios = document.getElementsByName('levels');
+	if (radios[0].checked) {
+		level = radios[0].value + 1;
+	}else{
+		level = radios[1].value + 1;
 	}
 	
 	do{
@@ -93,10 +103,10 @@ function spawnFood(){
 	foodNode.x = Math.floor((Math.random()*(gameStage.width - 40)) + 10);
 	foodNode.y = Math.floor((Math.random()*(gameStage.height - 40)) + 10);
 	
-	foodNode.left = foodNode.x - 10 ;
-	foodNode.top = foodNode.y - 10;
-	foodNode.right = foodNode.x + 10;
-	foodNode.bottom = foodNode.y + 10;
+	foodNode.left = foodNode.x - 25 ;
+	foodNode.top = foodNode.y - 25;
+	foodNode.right = foodNode.x + 25;
+	foodNode.bottom = foodNode.y + 25;
     	
 	ctx.beginPath();
 	ctx.arc(foodNode.x, foodNode.y, 10, 0, 2 * Math.PI);
@@ -118,17 +128,32 @@ function spawnBug(){
 	if (bugProbability < 4) {
 		bugNode.type = 'black';
 		bugNode.img = blackBug.src;
-		bugNode.speed = 1.5;
+		if(level == 1){
+			bugNode.speed = 1.5;
+		}else{
+			bugNode.speed = 2.0;
+		}
+		bugNode.score = 5;
 	}
 	else if (bugProbability >= 4 && bugProbability <= 6) {
 		bugNode.type = 'red';
 		bugNode.img = blackBug.src;
-		bugNode.speed = 0.75;
+		if(level == 1){
+			bugNode.speed = 0.75;
+		}else{
+			bugNode.speed = 1.0;
+		}
+		bugNode.score = 3;
 	}
 	else {
 		bugNode.type = 'orange';
 		bugNode.img = blackBug.src;
-		bugNode.speed = 0.6;
+		if(level == 1){
+			bugNode.speed = 0.6;
+		}else{
+			bugNode.speed = 0.8;
+		}
+		bugNode.score = 1;
 	}
 	bugNode.target = shortestDistance(bugNode.x, bugNode.y);
 	bugNode.angle = Math.atan2(bugNode.target.y - bugNode.y, bugNode.target.x - bugNode.x) + (Math.PI / 2);	
@@ -188,6 +213,7 @@ function shortestDistance(x, y){
 
 function attack(event){
 	var gameStage = document.getElementById("gameScreen");
+	var ctx = gameStage.getContext("2d");
 	var rect = gameStage.getBoundingClientRect();
 	var clickx = Math.floor(event.clientX - rect.left);
     var clicky = Math.floor(event.clientY - rect.top);
@@ -195,41 +221,61 @@ function attack(event){
 	var ctop = clicky - 30;
 	var cright = clickx + 30;
 	var cbottom = clicky + 30;
-		
+	var angle;
+	var deletedXPos;
+	var deletedYPos;
+	var color;
+	
 	for(i = 0; i <  swarm.length; i++){
 		if(cleft < swarm[i].x
 			&& cright > swarm[i].x 
 			&& ctop < swarm[i].y 
 			&& cbottom > swarm[i].y){
 			//will later increase score depending on the bug;
-			if(swarm[i].type == 'black'){
-				score += 3;
-			}else if(swarm[i].type == 'red'){
-				score += 2;
-			}else{
-				score += 1;
-			}
+			score += swarm[i].score;
 			document.getElementById("Score").innerHTML = "Score: " + score;
+			//angle = swarm[i].angle;
+			//deletedXPos = swarm[i].x;
+			//deletedYPos = swarm[i].y;
+			//color = swarm[i].type;
 			//remove from swarm array
 			swarm.splice(i,1);
+			//fade(deletedXPos, deletedYPos, angle, color, 1);
+			
 			
 		}
 	}
 }
 
+/*
+//Out attempt at fading out a bug
+function fade(x,y,angle, color, op) {
+	var gameStage = document.getElementById("gameScreen");
+	var ctx = gameStage.getContext("2d");
+	ctx.fillStyle = color;
+	ctx.translate(x, y);
+	ctx.rotate(angle);
+	if (op <= 0.1){
+            clearInterval(timer);
+    }else{
+		ctx.globalAlpha = op;
+		ctx.fillRect(-5,-20,10,40);
+		op -= 0.5;
+	}
+    
+    var timer = setInterval(function () {fade(x,y,angle,color,op)}, 2000);
+}
+*/
+function fadingProcess(){
+
+}
 
 function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
 	for(var b = 0; b < swarm.length; b++){
-		if(swarm[b].type == 'black'){
-			ctx.fillStyle = "Black";
-		}else if(swarm[b].type == 'red'){
-			ctx.fillStyle = "Red";
-		}else{
-			ctx.fillStyle = "Orange";
-		}
+		ctx.fillStyle = swarm[b].type;
 		if (swarm[b].x < swarm[b].target.right 
 			&& swarm[b].x > swarm[b].target.left
 			&& swarm[b].y < swarm[b].target.bottom
