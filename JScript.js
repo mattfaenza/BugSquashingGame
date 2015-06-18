@@ -8,6 +8,7 @@ var failedSpawn = 0;
 var bugSpawner;
 var updater;
 var blackBug = new Image();
+var MyReq;
 blackBug.src = 'images/black.png';
 
 //called when page loads; sets up the handler
@@ -37,7 +38,7 @@ function changeScreens(){
 //starts the timer and recursively counts down
 function timerCount(){
 	document.getElementById("countDown").innerHTML = "Time Left:" + seconds;
-	if(seconds == 0){
+	if(seconds == 0 || foodBits.length == 0){
 		alert("Game Over!");
 	}else{
 		seconds--;
@@ -52,6 +53,7 @@ function pause(){
 	//gonna change the pause button to a play button
 	document.getElementById('pauseButton').style.display='none';
 	document.getElementById('resumeButton').style.display='block';
+	cancelAnimationFrame(MyReq);
 }
 
 //resumes the game
@@ -60,6 +62,7 @@ function resume(){
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
 	document.getElementById('pauseButton').style.display='block';
 	document.getElementById('resumeButton').style.display='none';
+	MyReq = requestAnimationFrame(update);
 }
 
 //a food node
@@ -137,7 +140,7 @@ function spawnBug(){
 		/*blackBug.onload = function () {
 			ctx.drawImage(bugNode.img, 0,0,60,60);
 		}*/
-		ctx.fillRect(0, 0, 10, 40);
+		ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 
@@ -154,7 +157,7 @@ function spawnBug(){
 		/*blackBug.onload = function () {
 			ctx.drawImage(bugNode.img, 0,0,60,60);
 		}*/
-		ctx.fillRect(0, 0, 10, 40);
+		ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();	
 		swarm.push(bugNode);
 
@@ -167,14 +170,22 @@ function spawnBug(){
 function attack(event){
 	var gameStage = document.getElementById("gameScreen");
 	var rect = gameStage.getBoundingClientRect();
-	var clickx = event.clientX - rect.left;
-    var clicky = event.clientY - rect.top;
-		
-	for(i = 0; i < foodBits.length; i++){
-		if(clickx < foodBits[i].right && clickx > foodBits[i].left && clicky > foodBits[i].top && clicky < foodBits[i].bottom){
-			alert("clicked" + (i+1));
+	var clickx = Math.floor(event.clientX - rect.left);
+    var clicky = Math.floor(event.clientY - rect.top);
+	var cleft = clickx - 15;
+	var ctop = clicky - 15;
+	var cright = clickx + 15;
+	var cbottom = clicky + 15;
+	
+	for(i = 0; i < swarm.length; i++){
+		document.getElementById("Score").innerHTML = cleft + " " + cright + " " + ctop+ " " + cbottom;
+		if(cleft < swarm[i].xPos
+			&& cright > swarm[i].xPos 
+			&& ctop < swarm[i].yPos 
+			&& cbottom > swarm[i].yPos){
+			alert("clicked at: " + swarm[i].xPos + ", " + swarm[i].yPos);
 			//remove from swarm array
-			//swarm.splice(b,1);
+			swarm.splice(i,1);
 		}
 	}
 }
@@ -189,7 +200,6 @@ function update(){
 			&& swarm[b].xPos > swarm[b].target.left
 			&& swarm[b].yPos < swarm[b].target.bottom
 			&& swarm[b].yPos > swarm[b].target.top){
-			//foodBits.splice(swarm[b].target.index, 1);
 			var i = swarm[b].target.index;
 			foodBits.splice(i, 1);
 			for(var a = 0; a < foodBits.length; a++) {
@@ -206,11 +216,15 @@ function update(){
 				var newY;
 				if(swarm[b].xPos < swarm[b].target.xPos){
 					newX = 1;
+				}else if(swarm[b].xPos == swarm[b].target.xPos){
+					newX = 0;
 				}else{
 					newX = -1;
 				}
 				if(swarm[b].yPos < swarm[b].target.yPos){
 					newY = 1;
+				}else if(swarm[b].yPos == swarm[b].target.yPos){
+					newY = 0;
 				}else{
 					newY = -1;
 				}
@@ -219,7 +233,7 @@ function update(){
 				/*blackBug.onload = function () {
 					ctx.drawImage(swarm[b].img, 0,0,60,60);
 				}*/
-				ctx.fillRect(0, 0, 10, 40);
+				ctx.fillRect(-5, -20, 10, 40);
 				ctx.restore();
 			
 	}
@@ -230,7 +244,7 @@ function update(){
 		ctx.closePath();
 		ctx.fill();
 	}		
-	requestAnimationFrame(update);
+	MyReq = requestAnimationFrame(update);
 }
 
 //This function will get the nearest food node to the bug
