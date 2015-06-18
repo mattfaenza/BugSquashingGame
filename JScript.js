@@ -115,9 +115,9 @@ function Bug(xPos, yPos, bugProbability) {
 		this.type = 'black';
 		this.img = img;
 		if(level == 1){
-			this.speed = 1.5;
+			this.speed = 2.5;
 		}else{
-			this.speed = 2.0;
+			this.speed = 3.333;
 		}
 		this.score = 5;
 	}
@@ -127,9 +127,9 @@ function Bug(xPos, yPos, bugProbability) {
 		this.type = 'red';
 		this.img = img;
 		if(level == 1){
-			this.speed = 0.75;
+			this.speed = 1.25;
 		}else{
-			this.speed = 1.0;
+			this.speed = 1.667;
 		}
 		this.score = 3;
 	}
@@ -139,9 +139,9 @@ function Bug(xPos, yPos, bugProbability) {
 		this.type = 'orange';
 		this.img = img;
 		if(level == 1){
-			this.speed = 0.6;
+			this.speed = 1;
 		}else{
-			this.speed = 0.8;
+			this.speed = 1.3;
 		}
 		this.score = 1;
 	}
@@ -287,7 +287,10 @@ function update(){
 		ctx.closePath();
 		ctx.fill();
 	}		
-	MyReq = requestAnimationFrame(update);
+	setTimeout(function(){
+		MyReq = requestAnimationFrame(update);
+	},1000/60);
+	
 }
 
 //This function will get the nearest food node to the bug
