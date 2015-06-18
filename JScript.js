@@ -10,6 +10,7 @@ blackBug.src = 'images/black.png';
 var MyReq;
 var score = 0;
 var hscore = localStorage.hscore;
+var restart = sessionStorage.restart;
 var level = 0;
 window.onload = startClick;
 
@@ -20,6 +21,7 @@ function startClick(){
 	document.getElementById("pauseButton").onclick = pause;
 	document.getElementById("resumeButton").onclick = resume;
 	document.getElementById("highScore").innerHTML ="Highscore: " + localStorage.hscore;
+	checkRestart();
 }
 
 //function to change the screen from start to game screen
@@ -61,9 +63,10 @@ function timerCount(){
 				document.getElementById("highScore").innerHTML ="Highscore:" + localStorage.hscore;
 		}
 		if(confirm("\t\tGame Over! \n OK = Restart, Cancel = Quit") == true){
+			sessionStorage.restart = 1;
 			location.reload();
-			
 		}else{
+			sessionStorage.restart = 0;
 			location.reload();
 		}
 
@@ -304,4 +307,10 @@ function shortestDistance(xPos, yPos){
 		}
 	}
 	return targ;
+}
+
+function checkRestart() {
+  if(sessionStorage.restart == 1){
+	document.getElementById("startButton").click();
+  }
 }
