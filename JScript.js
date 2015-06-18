@@ -10,6 +10,7 @@ var score = 0;
 var hscore = localStorage.hscore;
 var restart = sessionStorage.restart;
 var level = 0;
+var updater;
 window.onload = startClick;
 
 
@@ -76,6 +77,7 @@ function timerCount(){
 
 //pauses the game
 function pause(){
+	clearTimeout(updater);
 	clearTimeout(countD);
 	clearTimeout(bugSpawner);
 	//gonna change the pause button to a play button
@@ -88,9 +90,11 @@ function pause(){
 function resume(){
 	countD = setTimeout("timerCount()", 1000);
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
+	updater = setTimeout(function(){
+		MyReq = requestAnimationFrame(update);
+	},1000/60);
 	document.getElementById('pauseButton').style.display='block';
 	document.getElementById('resumeButton').style.display='none';
-	MyReq = requestAnimationFrame(update);
 }
 
 //spawns a single food object
@@ -304,7 +308,7 @@ function update(){
 		ctx.closePath();
 		ctx.fill();
 	}		
-	setTimeout(function(){
+	updater = setTimeout(function(){
 		MyReq = requestAnimationFrame(update);
 	},1000/60);
 }
