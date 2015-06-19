@@ -43,16 +43,22 @@ width:400px;
 
 #countDown{
  float: left;
+  margin-right:85px;
+  margin-left:15px
 }
 
 #pauseButton{
  float: left;
  display: block;
+ margin-right:95px;
+ margin-top:15px;
 }
 
 #resumeButton{
  float: left;
  display: none;
+  margin-right:95px;
+   margin-top:15px;
 }
 
 #Score{
