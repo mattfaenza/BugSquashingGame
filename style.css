@@ -33,15 +33,23 @@ body {
 }
 
 #countDown{
- float: left;
+ position: absolute;
+ left: 150px;
 }
 
 #pauseButton{
- float: left;
+ position: absolute;
+ left: 300px;
  display: block;
 }
 
 #resumeButton{
- float: left;
+ position: absolute;
+ left: 300px;
  display: none;
+}
+
+#Score{
+ position: absolute;
+ left: 400px;
 }
