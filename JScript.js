@@ -109,6 +109,9 @@ function foodNode(xPos, yPos) {
 	this.top = this.yPos - 25;
 	this.right = this.xPos + 25;
 	this.bottom = this.yPos + 25;
+	var img = document.createElement('img');
+	img.src = 'images/donut.png';
+	this.img = img;
 }
 
 //a bug node - needs a check for level 1 or 2, level 1 for now
@@ -163,12 +166,15 @@ function spawnFood(){
 	var foodBit = new foodNode(xRandom, yRandom);
 	
 	var ctx = gameStage.getContext("2d");
-	ctx.fillStyle = "#FF0000";
-	
-	ctx.beginPath();
+	ctx.save();
+	ctx.translate(foodBit.xPos, foodBit.yPos);
+	ctx.drawImage(foodBit.img,-10,-10,20,20);
+	ctx.restore();
+	/*ctx.beginPath();
 	ctx.arc(foodBit.xPos, foodBit.yPos, 10, 0, 2 * Math.PI);
 	ctx.closePath();
-	ctx.fill();
+	ctx.fill();*/
+	
 	
 	foodBits.push(foodBit);
 }
@@ -270,12 +276,16 @@ function update(){
 		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();	
 	}
-	ctx.fillStyle = "RED";
+	//ctx.fillStyle = "RED";
 	for(var a = 0; a < foodBits.length; a++){
-		ctx.beginPath();
+		ctx.save();
+		ctx.translate(foodBits[a].xPos, foodBits[a].yPos);
+		ctx.drawImage(foodBits[a].img,-10,-10,20,20);
+		ctx.restore();
+		/*ctx.beginPath();
 		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
 		ctx.closePath();
-		ctx.fill();
+		ctx.fill();*/
 	}		
 	updater = setTimeout(function(){
 		MyReq = requestAnimationFrame(update);
