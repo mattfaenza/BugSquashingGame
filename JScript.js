@@ -13,7 +13,6 @@ var level = 0;
 var updater;
 window.onload = startClick;
 
-
 //called when page loads; sets up the handler
 function startClick(){
 	document.getElementById("startButton").onclick = changeScreens;
@@ -28,25 +27,29 @@ function changeScreens(){
 	document.getElementById('startScreen').style.display='none';
 	document.getElementById('infoBar').style.display='block';
 	document.getElementById('gameScreen').style.display='block';
-	
-	if(hscore == null){
+	//check if highscore is undefined, make it 0 if so;
+	if(hscore == undefined){
 		localStorage.hscore = score;
 	}
-	
+	//used to get the value of the radio buttons
 	var radios = document.getElementsByName('levels');
 	if (radios[0].checked) {
 		level = radios[0].value + 1;
 	}else{
 		level = radios[1].value + 1;
 	}
-	
+	//initialize the fruit and their drawings
 	do{
 	spawnFood();
 	foodSpawnCount++;
 	}while(foodSpawnCount != 5)
+	//starts the bug spawn
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
+	//starts the count down
 	timerCount();
+	//starts the frame updates
 	update();
+	//when clicks happen, call the attack function
 	document.getElementById("gameScreen").onclick = attack;
 }
 
@@ -61,14 +64,13 @@ function timerCount(){
                 localStorage.hscore = score;
 				document.getElementById("highScore").innerHTML ="Highscore:" + localStorage.hscore;
 		}
-		if(confirm("\t\tGame Over! \n OK = Restart, Cancel = Quit") == true){
+		if(confirm("\t\tGame Over! \n \t Your Score was: "+score+"\nOK = Restart, Cancel = Quit") == true){
 			sessionStorage.restart = 1;
 			location.reload();
 		}else{
 			sessionStorage.restart = 0;
 			location.reload();
 		}
-
 	}else{
 		seconds--;
 		countD = setTimeout("timerCount()", 1000);
@@ -182,7 +184,6 @@ function spawnBug(){
 		xRandom = (Math.random()*(gameStage.width - 40)) + 15;
 		bugProbability = Math.floor((Math.random()* 10 + 1));
 		var bugNode = new Bug(xRandom, 0, bugProbability)
-		ctx.fillStyle = bugNode.type;
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
@@ -190,7 +191,6 @@ function spawnBug(){
 		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
-
 		failedSpawn = 0;
 		//updateBug call?
 	}else if(Math.floor(Math.random()*1.9) == 1){ //randomly choose whether to spawn or not
@@ -198,7 +198,6 @@ function spawnBug(){
 		bugProbability = Math.floor((Math.random()* 10 + 1))
 		var bugNode = new Bug(xRandom, 0, bugProbability)
 		//stand in for bug graphic
-		ctx.fillStyle = bugNode.type;
 		ctx.save();
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
@@ -206,7 +205,6 @@ function spawnBug(){
 		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();	
 		swarm.push(bugNode);
-
 		failedSpawn = 0;
 	}else{ //failed spawn, increase the count by 1
 		failedSpawn += 1; 
@@ -244,7 +242,6 @@ function update(){
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,500);
 	for(var b = 0; b < swarm.length; b++){
-		ctx.fillStyle = swarm[b].type;
 		if (swarm[b].xPos < swarm[b].target.right 
 			&& swarm[b].xPos > swarm[b].target.left
 			&& swarm[b].yPos < swarm[b].target.bottom
@@ -272,8 +269,7 @@ function update(){
 		swarm[b].yPos += newY;
 		ctx.drawImage(swarm[b].img,-5,-20,10,40);
 		//ctx.fillRect(-5, -20, 10, 40);
-		ctx.restore();
-			
+		ctx.restore();	
 	}
 	ctx.fillStyle = "RED";
 	for(var a = 0; a < foodBits.length; a++){
@@ -305,6 +301,7 @@ function shortestDistance(xPos, yPos){
 	return targ;
 }
 
+//This function will check if the endscreen restart button was clicked
 function checkRestart() {
   if(sessionStorage.restart == 1){
 	document.getElementById("startButton").click();
