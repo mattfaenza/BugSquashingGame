@@ -211,6 +211,7 @@ function spawnBug(){
 	}
 }
 
+//create a hitbox to check if any bugs should be deleted
 function attack(event){
 	var gameStage = document.getElementById("gameScreen");
 	var rect = gameStage.getBoundingClientRect();
