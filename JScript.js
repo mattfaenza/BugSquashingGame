@@ -13,7 +13,6 @@ var level = 0;
 var updater;
 window.onload = startClick;
 
-
 //called when page loads; sets up the handler
 function startClick(){
 	document.getElementById("startButton").onclick = changeScreens;
@@ -28,11 +27,10 @@ function changeScreens(){
 	document.getElementById('startScreen').style.display='none';
 	document.getElementById('infoBar').style.display='block';
 	document.getElementById('gameScreen').style.display='block';
-	
-	if(hscore == null){
+	//check if highscore is undefined, make it 0 if so;
+	if(hscore == undefined){
 		localStorage.hscore = score;
 	}
-	
 	//used to get the value of the radio buttons
 	var radios = document.getElementsByName('levels');
 	if (radios[0].checked) {
@@ -40,14 +38,18 @@ function changeScreens(){
 	}else{
 		level = radios[1].value + 1;
 	}
-	
+	//initialize the fruit and their drawings
 	do{
 	spawnFood();
 	foodSpawnCount++;
 	}while(foodSpawnCount != 5)
+	//start the bug spawn
 	bugSpawner = setInterval(function(){spawnBug()}, 1000);
+	//starts the countdown
 	timerCount();
+	//starts frame updates
 	update();
+	//when clicks happen, call the attack function
 	document.getElementById("gameScreen").onclick = attack;
 }
 
@@ -194,6 +196,7 @@ function spawnBug(){
 	}
 }
 
+//calculates the distance of the closest food object
 function shortestDistance(x, y){
 	var targ = 0;
 	var findShort = 0;
@@ -210,6 +213,7 @@ function shortestDistance(x, y){
 	return targ;
 }
 
+//creates an area of attack to hit the bugs
 function attack(event){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
@@ -240,14 +244,11 @@ function attack(event){
 			//remove from swarm array
 			swarm.splice(i,1);
 			//fade(deletedXPos, deletedYPos, angle, color, 1);
-			
-			
 		}
 	}
 }
 
-/*
-//Out attempt at fading out a bug
+/*//Our attempt at fading out a bug
 function fade(x,y,angle, color, op) {
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
@@ -266,6 +267,7 @@ function fade(x,y,angle, color, op) {
 }
 */
 
+//updates drawing of bugs and food, detects  bug+food collision
 function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
@@ -298,8 +300,7 @@ function update(){
 		swarm[b].y += newY;
 		ctx.drawImage(swarm[b].img,-5,-20,10,40);
 		//ctx.fillRect(-5, -20, 10, 40);
-		ctx.restore();
-			
+		ctx.restore();		
 	}
 	ctx.fillStyle = "RED";
 	for(var a = 0; a < foodBits.length; a++){
@@ -313,6 +314,7 @@ function update(){
 	},1000/60);
 }
 
+//check if the player clicked restart or quit
 function checkRestart() {
   if(sessionStorage.restart == 1){
 	document.getElementById("startButton").click();
