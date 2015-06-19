@@ -1,11 +1,13 @@
 <!DOCTYPE html>
 <html>
  <head>
+   <title>Bug Smush 20XX</title>
    <link rel="stylesheet" media="screen, handheld" type="text/css" href="style.css">
    <script src="JScript.js"></script>
  </head>
  
  <body>
+ <header>Bug Smush 20XX</header>
   <div id="startScreen"><br>
    <form id="levelChoose">Level:
     <input type="radio" id="level1" name="levels" value=0 checked="checked">1 
@@ -13,13 +15,14 @@
    </form><br>
    <button type="button" id="startButton">Start</button><br>
    <p id="highScore">High Score: </p>
+
   </div>
   
   <div id="infoBar">
    <p id="countDown"></p>
    <button type="button" value="Pause" id="pauseButton">Pause</button>
    <button type="button" value="Resume" id="resumeButton">Resume</button>
-   <p id="Score"></p>
+   <p id="Score">Score: 0</p>
   </div>
   
   <canvas id="gameScreen" width="400" height="500"></canvas>
