@@ -232,7 +232,6 @@ function attack(event){
 			document.getElementById("Score").innerHTML = "Score: " + score;
 			//remove from swarm array
 			swarm.splice(i,1);
-			
 		}
 	}
 }
@@ -281,7 +280,6 @@ function update(){
 	updater = setTimeout(function(){
 		MyReq = requestAnimationFrame(update);
 	},1000/60);
-	
 }
 
 //This function will get the nearest food node to the bug
