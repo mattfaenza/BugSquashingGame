@@ -119,6 +119,7 @@ function Bug(xPos, yPos, bugProbability) {
 	this.xPos = Math.floor(xPos);
 	this.yPos = Math.floor(yPos);
 	this.alive = 1;
+	this.alpha = 1.0;
 	if (bugProbability < 4) {
 		var img = document.createElement('img');
 		img.src = 'images/black.png';
@@ -195,7 +196,6 @@ function spawnBug(){
 		ctx.translate(bugNode.xPos, bugNode.yPos);
 		ctx.rotate(bugNode.angle);
 		ctx.drawImage(bugNode.img,-5,-20,10,40);
-		//ctx.fillRect(-5, -20, 10, 40);
 		ctx.restore();
 		swarm.push(bugNode);
 		failedSpawn = 0;
@@ -230,7 +230,6 @@ function attack(event){
 	var cbottom = clicky + 30;
 	
 	for(i = 0; i < swarm.length; i++){
-		//document.getElementById("Score").innerHTML = cleft + " " + cright + " " + ctop+ " " + cbottom;
 		if(cleft < swarm[i].xPos
 			&& cright > swarm[i].xPos 
 			&& ctop < swarm[i].yPos 
@@ -246,7 +245,6 @@ function attack(event){
 function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
-	var alph = 1.0;
 	ctx.clearRect(0,0,400,600);
 	for(var b = 0; b < swarm.length; b++){
 		if (swarm[b].alive == 1) {
@@ -261,7 +259,6 @@ function update(){
 				}	
 			}
 			ctx.save();
-			//swarm[b].yPos += 1;
 			swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
 			swarm[b].angle = Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) * 180/Math.PI;
 			ctx.translate(swarm[b].xPos, swarm[b].yPos);
@@ -276,19 +273,18 @@ function update(){
 			swarm[b].xPos += newX;
 			swarm[b].yPos += newY;
 			ctx.drawImage(swarm[b].img,-5,-20,10,40);
-			//ctx.fillRect(-5, -20, 10, 40);
 			ctx.restore();
 		} else {
 			//fade out per frame
-			alph -= 0.0084;
-			//ctx.save();
-			//ctx.translate(swarm[b].xPos, swarm[b].yPos);
-			//ctx.rotate((swarm[b].angle * Math.PI/180) + (Math.PI/2));
-			ctx.globalAlpha = alph;
+			swarm[b].alpha -= 0.0084;
+			ctx.save();
+			ctx.translate(swarm[b].xPos, swarm[b].yPos);
+			ctx.rotate((swarm[b].angle * Math.PI/180) + (Math.PI/2));
+			ctx.globalAlpha = swarm[b].alpha;
 			ctx.drawImage(swarm[b].img,-5,-20,10,40);
-			//ctx.restore();
+			ctx.restore();
 			//remove from swarm array
-			if (alph == 0) {
+			if (swarm[b].alpha <= 0.01) {
 				swarm.splice(b,1);
 			}
 		}
