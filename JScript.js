@@ -109,12 +109,16 @@ function foodNode(xPos, yPos) {
 	this.top = this.yPos - 25;
 	this.right = this.xPos + 25;
 	this.bottom = this.yPos + 25;
+	var img = document.createElement('img');
+	img.src = 'images/donut.png';
+	this.img = img;
 }
 
 //a bug node - needs a check for level 1 or 2, level 1 for now
 function Bug(xPos, yPos, bugProbability) {
 	this.xPos = Math.floor(xPos);
 	this.yPos = Math.floor(yPos);
+	this.alive = 1;
 	if (bugProbability < 4) {
 		var img = document.createElement('img');
 		img.src = 'images/black.png';
@@ -163,12 +167,15 @@ function spawnFood(){
 	var foodBit = new foodNode(xRandom, yRandom);
 	
 	var ctx = gameStage.getContext("2d");
-	ctx.fillStyle = "#FF0000";
-	
-	ctx.beginPath();
+	ctx.save();
+	ctx.translate(foodBit.xPos, foodBit.yPos);
+	ctx.drawImage(foodBit.img,-10,-10,20,20);
+	ctx.restore();
+	/*ctx.beginPath();
 	ctx.arc(foodBit.xPos, foodBit.yPos, 10, 0, 2 * Math.PI);
 	ctx.closePath();
-	ctx.fill();
+	ctx.fill();*/
+	
 	
 	foodBits.push(foodBit);
 }
@@ -231,8 +238,7 @@ function attack(event){
 			//will later increase score depending on the bug;
 			score += swarm[i].score;
 			document.getElementById("Score").innerHTML = "Score: " + score;
-			//remove from swarm array
-			swarm.splice(i,1);
+			swarm[i].alive = 0;
 		}
 	}
 }
@@ -240,43 +246,63 @@ function attack(event){
 function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
-	ctx.clearRect(0,0,400,500);
+	var alph = 1.0;
+	ctx.clearRect(0,0,400,600);
 	for(var b = 0; b < swarm.length; b++){
-		if (swarm[b].xPos < swarm[b].target.right 
-			&& swarm[b].xPos > swarm[b].target.left
-			&& swarm[b].yPos < swarm[b].target.bottom
-			&& swarm[b].yPos > swarm[b].target.top){
-			var i = swarm[b].target.index;
-			foodBits.splice(i, 1);
-			for(var a = 0; a < foodBits.length; a++) {
-				foodBits[a].index = a;
-			}	
+		if (swarm[b].alive == 1) {
+			if (swarm[b].xPos < swarm[b].target.right 
+				&& swarm[b].xPos > swarm[b].target.left
+				&& swarm[b].yPos < swarm[b].target.bottom
+				&& swarm[b].yPos > swarm[b].target.top){
+				var i = swarm[b].target.index;
+				foodBits.splice(i, 1);
+				for(var a = 0; a < foodBits.length; a++) {
+					foodBits[a].index = a;
+				}	
+			}
+			ctx.save();
+			//swarm[b].yPos += 1;
+			swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
+			swarm[b].angle = Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) * 180/Math.PI;
+			ctx.translate(swarm[b].xPos, swarm[b].yPos);
+			ctx.rotate((swarm[b].angle * Math.PI/180) + (Math.PI/2));
+			var newX = swarm[b].speed * (90 - Math.abs(swarm[b].angle)) / 90;
+			var newY;
+			if (swarm[b].angle < 0){
+				newY = -swarm[b].speed + Math.abs(newX);
+			}else{
+				newY = swarm[b].speed - Math.abs(newX);
+			}
+			swarm[b].xPos += newX;
+			swarm[b].yPos += newY;
+			ctx.drawImage(swarm[b].img,-5,-20,10,40);
+			//ctx.fillRect(-5, -20, 10, 40);
+			ctx.restore();
+		} else {
+			//fade out per frame
+			alph -= 0.0084;
+			//ctx.save();
+			//ctx.translate(swarm[b].xPos, swarm[b].yPos);
+			//ctx.rotate((swarm[b].angle * Math.PI/180) + (Math.PI/2));
+			ctx.globalAlpha = alph;
+			ctx.drawImage(swarm[b].img,-5,-20,10,40);
+			//ctx.restore();
+			//remove from swarm array
+			if (alph == 0) {
+				swarm.splice(b,1);
+			}
 		}
-		ctx.save();
-		//swarm[b].yPos += 1;
-		swarm[b].target = shortestDistance(swarm[b].xPos, swarm[b].yPos);
-		swarm[b].angle = Math.atan2(swarm[b].target.yPos - swarm[b].yPos, swarm[b].target.xPos - swarm[b].xPos) * 180/Math.PI;
-		ctx.translate(swarm[b].xPos, swarm[b].yPos);
-		ctx.rotate((swarm[b].angle * Math.PI/180) + (Math.PI/2));
-		var newX = swarm[b].speed * (90 - Math.abs(swarm[b].angle)) / 90;
-		var newY;
-		if (swarm[b].angle < 0){
-            newY = -swarm[b].speed + Math.abs(newX);
-		}else{
-			newY = swarm[b].speed - Math.abs(newX);
-		}
-		swarm[b].xPos += newX;
-		swarm[b].yPos += newY;
-		ctx.drawImage(swarm[b].img,-5,-20,10,40);
-		//ctx.fillRect(-5, -20, 10, 40);
-		ctx.restore();	
 	}
-	ctx.fillStyle = "RED";
+	//ctx.fillStyle = "RED";
 	for(var a = 0; a < foodBits.length; a++){
-		ctx.beginPath();
+		ctx.save();
+		ctx.translate(foodBits[a].xPos, foodBits[a].yPos);
+		ctx.drawImage(foodBits[a].img,-10,-10,20,20);
+		ctx.restore();
+		/*ctx.beginPath();
 		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
 		ctx.closePath();
-		ctx.fill();
+		ctx.fill();*/
 	}		
 	updater = setTimeout(function(){
 		MyReq = requestAnimationFrame(update);
