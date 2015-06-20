@@ -99,7 +99,7 @@ function resume(){
 	document.getElementById('resumeButton').style.display='none';
 }
 
-//a food node
+//a food node, needs randomized x and y paramters
 function foodNode(xPos, yPos) {
 	//food node is pushed after creation, giving it the tail index
 	this.index = foodBits.length;
@@ -114,7 +114,7 @@ function foodNode(xPos, yPos) {
 	this.img = img;
 }
 
-//a bug node - needs a check for level 1 or 2, level 1 for now
+//a bug node - needs randomized x and probability parameters
 function Bug(xPos, yPos, bugProbability) {
 	this.xPos = Math.floor(xPos);
 	this.yPos = Math.floor(yPos);
@@ -246,8 +246,10 @@ function update(){
 	var gameStage = document.getElementById("gameScreen");
 	var ctx = gameStage.getContext("2d");
 	ctx.clearRect(0,0,400,600);
+	//loop to update bug nodes positions and react if they have been killed
 	for(var b = 0; b < swarm.length; b++){
 		if (swarm[b].alive == 1) {
+			//Check if bug is within a food bit's hitbox
 			if (swarm[b].xPos < swarm[b].target.right 
 				&& swarm[b].xPos > swarm[b].target.left
 				&& swarm[b].yPos < swarm[b].target.bottom
@@ -275,7 +277,7 @@ function update(){
 			ctx.drawImage(swarm[b].img,-5,-20,10,40);
 			ctx.restore();
 		} else {
-			//fade out per frame
+			//fade out a little bit per frame
 			swarm[b].alpha -= 0.0084;
 			ctx.save();
 			ctx.translate(swarm[b].xPos, swarm[b].yPos);
@@ -289,16 +291,12 @@ function update(){
 			}
 		}
 	}
-	//ctx.fillStyle = "RED";
+	//loop for updating food bits in case they were eaten
 	for(var a = 0; a < foodBits.length; a++){
 		ctx.save();
 		ctx.translate(foodBits[a].xPos, foodBits[a].yPos);
 		ctx.drawImage(foodBits[a].img,-10,-10,20,20);
 		ctx.restore();
-		/*ctx.beginPath();
-		ctx.arc(foodBits[a].xPos, foodBits[a].yPos,10,0,2*Math.PI); 
-		ctx.closePath();
-		ctx.fill();*/
 	}		
 	updater = setTimeout(function(){
 		MyReq = requestAnimationFrame(update);
