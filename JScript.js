@@ -3,7 +3,7 @@ var countD;
 var foodBits = new Array();
 var swarm = new Array();
 var foodSpawnCount = 0;
-var failedSpawn = 0;
+var failedSpawn = 0; 
 var bugSpawner;
 var MyReq;
 var score = 0;
